@@ -17,6 +17,20 @@ class Numberpool extends Core_controller {
         $this->load_model('numberpool_model');
     }
 
+    public function savenewname(){
+        printarray($_POST);
+        $idpool=0;
+        foreach($_POST['poolname'] as $id=>$newPoolName){
+            $newPoolName = str_replace(" ", "_", trim($newPoolName));
+
+            $this->db->update('dm_poolgroup', "name,".$newPoolName ,"id=".$id);
+            echo $this->db->query->last."<br>";
+            echo $newPoolName;
+            $idpool = $id;
+        }
+        header("location: ".baseurl("numberpool/index/edit/".$idpool));
+    }
+
     public function index($page="",$idpool=0) {
         $page=urldecode( $page);
         $idpool=urldecode($idpool);
