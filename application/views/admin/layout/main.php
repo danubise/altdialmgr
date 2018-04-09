@@ -30,7 +30,7 @@
             <ul class="nav navbar-nav">
                 <li><a href="<?=baseurl("numberpool")?>">Группы номеров</a></li>
                 <li><a href="<?=baseurl("tester")?>">Тестер маршрутов</a></li>
-		<li><a href="<?=baseurl("tools")?>">HLR запрос</a></li>
+		<li><a href="http://<?=$_SERVER['HTTP_HOST']?>/tools">HLR запрос</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="<?=baseurl("settings")?>"><i class="fa fa-cogs"></i> Настройки</a></li>
