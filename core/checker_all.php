@@ -503,7 +503,7 @@ else{
                                             //$db->update("processing", "timeringing," . $t, "id=" . $data[$key]['id']);
                                             $state = "Ringing";
                                             if ($data[$key]['Uniqued'] === false) {
-                                                $t = $t + 0.5;
+                                                //$t = $t + 0.5;
                                                 $db->update("processing", "timeringing," .  $evar['Timestamp'], "id=" . $data[$key]['id']);
                                             }
                                             //logger("**** set ringing " . $t, "", $config['debug']);
@@ -586,7 +586,7 @@ else{
 
                                             //$action = false;
                                             if ($data[$key]['Uniqued'] === false) {
-                                                $t = $t + 0.5;
+                                                //$t = $t + 0.5;
                                                 $db->update("processing", "timering," . $t, "id=" . $data[$key]['id']);
                                             }
                                             $db->update("processing",'checkstart,1','id='.$data[$key]['id' ]);
