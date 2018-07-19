@@ -112,6 +112,7 @@ class Parcer
     }
     private function DialDivide($line){
         //[Oct 16 00:28:10] VERBOSE[22284][C-00c60f18] pbx.c: -- Executing [998909601680@managerd:1] Dial(\"Local/998909601680@checker-000014f0;2\", \"SIP/evo/111998909601680,90,L(3600000)\") in new stack
+        //
         $word=explode(" ",$line);
         $event['event']="dial";
         $event['time']=date("Y")."-".substr($word[0],1)."-".$word[1]." ".substr($word[2],0,strlen($word[2])-1);

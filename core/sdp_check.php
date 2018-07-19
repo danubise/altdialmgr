@@ -100,12 +100,14 @@ $ami= new Ami();
             while ($d = fgets($fh)) {
                $a= explode("\n",$d);
                 foreach($a as $key=>$value) {
+                    //[2018-07-19 13:47:46] VERBOSE[5704][C-0004405a] app_dial.c: SIP/stelton-0008cc26 is making progress passing it to SIP/bpot.251-0008cc24
                     $pos = strripos($value, "is making progress passing it to");
                     if ($pos === false) {
                         ;
                     }else{
 //echo $value;
-                        $value1 = explode("--",$value);
+                        $value1 = explode("app_dial.c: ",$value);
+                        //SIP/stelton-0008cc26 is making progress passing it to SIP/bpot.251-0008cc24
                         $t2=explode("is making progress passing it to",$value1[1]);
                         //echo $t2[0]." ====   ".$t2[1]."\n";
                         $pos2 = strripos($value, "Local");
