@@ -109,7 +109,7 @@ $ami= new Ami();
                         $value1 = explode("app_dial.c: ",$value);
                         //SIP/stelton-0008cc26 is making progress passing it to SIP/bpot.251-0008cc24
                         $t2=explode("is making progress passing it to",$value1[1]);
-                        //echo $t2[0]." ====   ".$t2[1]."\n";
+                        $log->debug( $t2,"SDP112");
                         $pos2 = strripos($value, "Local");
                         if($pos2 === false){
                             ;
@@ -130,8 +130,9 @@ $ami= new Ami();
                                     //$db->update("processing", "progress," . microtime(true), "id=" . $value2['id']);
                                     $log->info( "AMI channel =".$ami->GetChannel($t2[1]),"SDP_channel");
                                     //$eventtime=microtime(true);
+                                    $log->debug( $value,"SDP133");
                                     $progressline = $parcer->setlogline($value);
-                                    $log->debug($progressline,"SDP_progresslist");
+                                    $log->debug($progressline,"SDP_progresslist135");
                                     $eventtime=$progressline['unixtime'];
                                     $eventtime=time();
                                     $query = "UPDATE  `processing` SET  `progress` =  '".$eventtime."' WHERE  `channel` LIKE '".$chanid."';";
@@ -147,7 +148,7 @@ $ami= new Ami();
                                     //$db->update("processing", "progress," . microtime(true), "channel='" .$ami->GetChannel($t2[1])."'");
                                     foreach($resultarray as $channelid=>$eventtime1){
                                         $db->update("processing","progress,".$eventtime1,"channel='".$channelid."'");
-                                        $log->debug($db->query->last,"SDP125");
+                                        $log->debug($db->query->last,"SDP151");
                                     }
                                 }
                                 $stop[$chanid]=1;
