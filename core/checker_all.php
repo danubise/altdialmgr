@@ -359,6 +359,20 @@ else{
                                         $nextnumb=true;
                                     }
 
+                                    if($evar['Reason']==3){
+                                        $ar = array(
+                                            "timehangup" => $evar['Timestamp'],
+                                            "callstatus" => $evar['Reason'] ."/".$response[$evar['Reason']],
+                                            "status" => 1,
+                                            "checkstart" =>1,
+                                            "logdata"=>$logdata
+                                        );
+                                        $db->update("processing", $ar, "`actionid`='" . $data[$key]['actionid']."'");
+                                        $log->debug($db->query->last,$data[$key]['actionid']." line262");
+                                        unset($data[$key]);
+                                        $nextnumb=true;
+                                    }
+
                                         //
                                         //
                                         //$db->update("processing", $ar, "id=" . $data[$key]['id']);
