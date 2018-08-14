@@ -19,7 +19,6 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a href="<?=baseurl()?>" class="navbar-brand">Панель администратора</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -32,7 +31,6 @@
                 <li><a href="<?=baseurl("tester")?>">Тестер маршрутов</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="<?=baseurl("settings")?>"><i class="fa fa-cogs"></i> Настройки</a></li>
                 <li><a href="<?=baseurl('home/logout')?>"><i class="fa fa-power-off"></i> Выход</a></li>
             </ul>
 
