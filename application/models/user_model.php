@@ -80,6 +80,20 @@ class User_model extends Core_model {
             return false;
         }
     }
+    public function clientadd($userdata){
+        $exist=$this->db->select("`id` from `users` where `login`=".$userdata['login'],0);
+        if( $exist == ""){
+            $userdata['password'] = sha1($userdata['password']);
+            $userdata['hash'] = sha1($userdata['password'].$userdata['login']);
+            $userdata['group'] = 0;
+
+            $this->db->insert("users",$userdata);
+            echo $this->db->query->last;
+            return true;
+        }else{
+            return false;
+        }
+    }
     public function usersave($data){
         $id=$_POST['id'];
         $login=$_POST['login'];

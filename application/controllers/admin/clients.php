@@ -20,11 +20,12 @@ class Clients extends Core_controller {
         $this->view($view);
     }
 
-    public function add() {
+    public function add($userdata) {
         $view = array(
                     'view' => 'clients/add',
                     'module' => 'Add new client',
                     'var' => array(
+                        'userdata'=>$userdata
                     )
                 );
         $this->view($view);
@@ -32,7 +33,16 @@ class Clients extends Core_controller {
 
     public function adduser() {
         printarray($_POST);
-        die;
+        if($this->user_model->clientadd($_POST)){
+            $this->index();
+            return;
+        }else{
+            $this->add($_POST);
+        }
+    }
+
+    public function userdelete($username) {
+        $this->user_model->userdelete($username);
         $this->index();
     }
 }

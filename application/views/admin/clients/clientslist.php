@@ -11,9 +11,9 @@
                     <td><?= $value['login'] ?></td>
                     <td><?= $value['email'] ?></td>
                     <td>
-                        <a href="<?= baseurl('clients/useredit/' . $value['login']) ?>" class="btn btn-success">Edit</a>
+                        <a href="<?= baseurl('clients/useredit/' . $value['id']) ?>" class="btn btn-success">Edit</a>
                         &nbsp;
-                        <a href="<?= baseurl('clients/userdelete/' . $value['login']) ?>" class="btn btn-danger">Del</a>
+                        <a href="<?= baseurl('clients/userdelete/' . $value['id']) ?>" class="btn btn-danger">Del</a>
                     </td>
                 </tr>
             <?php endforeach;
