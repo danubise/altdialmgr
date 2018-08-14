@@ -10,7 +10,6 @@ class Clients extends Core_controller {
 
     public function index() {
         $users = $this->db->select("* from `users` where `login` != 'admin'");
-        echo $this->db->query->last;
         $view = array(
                     'view' => 'clients/clientslist',
                     'module' => 'List of the clients',
@@ -19,6 +18,22 @@ class Clients extends Core_controller {
                     )
                 );
         $this->view($view);
+    }
+
+    public function add() {
+        $view = array(
+                    'view' => 'clients/add',
+                    'module' => 'Add new client',
+                    'var' => array(
+                    )
+                );
+        $this->view($view);
+    }
+
+    public function adduser() {
+        printarray($_POST);
+        die;
+        $this->index();
     }
 }
 ?>

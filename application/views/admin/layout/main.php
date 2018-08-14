@@ -28,7 +28,7 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav">
-                <li><a href="<?=baseurl("clients")?>">Client</a></li>
+                <li><a href="<?=baseurl("clients")?>">Clients</a></li>
                 <li><a href="<?=baseurl("numberpool")?>">Группы номеров</a></li>
                 <li><a href="<?=baseurl("tester")?>">Тестер маршрутов</a></li>
             </ul>
