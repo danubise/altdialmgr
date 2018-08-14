@@ -106,6 +106,10 @@ class User_model extends Core_model {
         $this->db->update("`users`",$data,"`id`='$id'");
         return true;
     }
+    public function clientsave($data){
+        $this->db->update("users",$data,"`id`='".$data['id']."'");
+        return true;
+    }
     public function users(){
         $users=$this->db->select("* from `users`");
         return $users;

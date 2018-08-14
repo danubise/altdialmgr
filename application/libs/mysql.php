@@ -165,7 +165,7 @@ class db extends mysqli {
                 $array_keys = $this->get_row_keys($update);
                 $update = $this->structure_value($update);
                 foreach($update as $param=>$value) {
-                    $value=mysql_real_escape_string($value);
+                    //$value=mysql_real_escape_string($value);
                     $query .= "`".$param."`=".((count($value)>1 and $value[1]==cmd)? $value[0] : "'".$value."'").((next($array_keys))? ',' : '');
                 }
             }

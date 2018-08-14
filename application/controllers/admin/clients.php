@@ -42,6 +42,27 @@ class Clients extends Core_controller {
         }
     }
 
+    public function useredit($userid) {
+        $userdata=$this->user_model->userget($userid);
+        $view = array(
+                    'view' => 'clients/edit',
+                    'module' => 'Edit client',
+                    'var' => array(
+                        'userdata'=>$userdata
+                    )
+                );
+        $this->view($view);
+    }
+    public function usersave() {
+        $userdata=$_POST;
+        if($this->user_model->clientsave($userdata)){
+            $this->index();
+            return;
+        }else{
+            $userdata['failed'] = true;
+            $this->useredit($userdata['id']);
+        }
+    }
     public function userdelete($username) {
         $this->user_model->userdelete($username);
         $this->index();
