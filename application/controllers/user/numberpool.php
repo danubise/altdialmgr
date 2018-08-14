@@ -48,15 +48,6 @@ class Numberpool extends Core_controller {
                 foreach($text as $t) {
                 $t = trim($t);
                 if(is_numeric($t)) $num_array[] = $t;
-                    //$t = trim($value1);
-/*
-                   if (is_numeric($t)) {
-
-
-                        $values = $this->cp1251_to_utf8($t);
-                        $num_array[] = trim($t);
-                    }
-*/                
 		}
                 $tdata=array(
                     "name" => $_POST['name'],
@@ -74,8 +65,6 @@ class Numberpool extends Core_controller {
                 $num_array = array();
                 foreach($text as $value1) {
                     $values=$this->cp1251_to_utf8($value1);
-                    //$str = explode(";",$value);
-                    //foreach($str as $values) {
                         $prefix = "";
                         //echo $values."\n";
                     $num_array[] = trim($values);
@@ -87,7 +76,6 @@ class Numberpool extends Core_controller {
                             $values = $prefix.intval($values);
                             $num_array[] = $values;
                         }
-                    //}
                 }
                 $this->numberpool_model->AddNumberToPool($idpool,$num_array);
                 //printarray($num_array);
