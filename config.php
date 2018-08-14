@@ -13,6 +13,7 @@
  * SYSTEM CONFIG START
  */
 ///////////////////////////////////////////////////////////////
+include ('internal_config.php');
 $DEBUG = FALSE; //Выключаем режим дебага
 
 $system_path = 'system';
@@ -40,12 +41,6 @@ define('SITE_TITLE', '');
  * Mysql db config
  */
 define('db_lib', libs.'mysql.php');
-$_config['mysql'] = array(
-    'host' => 'localhost',
-    'user' => 'test',
-    'password' => 'test',
-    'base' => 'callwaytest'
-);
 
 ///////////////////////////////////////////////////////////////
 /**
