@@ -1,8 +1,8 @@
-<?php if ($addfail): ?>
+<?php if (isset($userdata['failed']) && $userdata['failed']): ?>
     <div class="alert alert-danger" role="alert">
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
         <span class="sr-only">Error:</span>
-        Пользователь с указанным логином уже существует
+        User login '<?=$userdata['login']?>' exists, try set another user login
     </div>
 <?php
 endif
@@ -11,31 +11,31 @@ endif
     <table class="table  table-striped" style="width: 500px">
         <tr>
             <th>Login:&nbsp;</th>
-            <td><input name="login" class="form-control"></td>
+            <td><input name="login" class="form-control" value="<?=$userdata['login']?>"></td>
         </tr>
         <tr>
             <th>Password:&nbsp;</th>
-            <td><input name="password" type="password" class="form-control" ></td>
+            <td><input name="password" type="password" class="form-control" value=""></td>
         </tr>
 
         <tr>
             <th>Name:&nbsp;</th>
-            <td><input name="name" type="text" class="form-control"></td>
+            <td><input name="name" type="text" class="form-control" value="<?=$userdata['name']?>"></td>
         </tr>
 
         <tr>
             <th>Email:&nbsp;</th>
-            <td><input name="email" type="text" class="form-control"></td>
+            <td><input name="email" type="text" class="form-control" value="<?=$userdata['email']?>"></td>
         </tr>
 
         <tr>
             <th>Phone:&nbsp;</th>
-            <td><input name="phone" type="text" class="form-control"></td>
+            <td><input name="phone" type="text" class="form-control" value="<?=$userdata['phone']?>"></td>
         </tr>
 
         <tr>
             <th>Skype:&nbsp;</th>
-            <td><input name="skype" type="text" class="form-control"></td>
+            <td><input name="skype" type="text" class="form-control" value="<?=$userdata['skype']?>"></td>
         </tr>
 
         <tr>

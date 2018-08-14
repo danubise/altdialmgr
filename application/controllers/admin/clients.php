@@ -32,12 +32,13 @@ class Clients extends Core_controller {
     }
 
     public function adduser() {
-        printarray($_POST);
-        if($this->user_model->clientadd($_POST)){
+        $userdata=$_POST;
+        if($this->user_model->clientadd($userdata)){
             $this->index();
             return;
         }else{
-            $this->add($_POST);
+            $userdata['failed'] = true;
+            $this->add($userdata);
         }
     }
 
