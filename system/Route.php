@@ -68,5 +68,6 @@ if(check_controller($route['controller'])) {
         echo 500; //Генерация 500 ошибки (отсутствует метод)
     }
 } else {
+    var_dump($route);
     echo 404;//Генерация 404 ошибки (отсутствует контролер)
 }

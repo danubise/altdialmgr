@@ -36,6 +36,7 @@ class User_model extends Core_model {
                 }
                 $this->group = $this->getGroup($this->owner->group);
                 $this->status = true;
+                var_dump($this);
                 return true;
             }
         }
