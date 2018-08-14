@@ -34,7 +34,7 @@ class Core_controller {
                 if(!isset($$key)) $$key = $var;
             }
         }
-        var_dump($param);
+
         if(!empty($param['page']) && file_exists(layout.$param['page'].EXT)) {
             include (layout.$param['page'].EXT);
             return true;
