@@ -7,6 +7,7 @@
  */
 
 function printarray($out) {
+    echo "printarrayFunction <br>";
     echo"<pre>";
     print_r($out);
     echo"</pre>";
