@@ -303,7 +303,7 @@ class Tester extends Core_controller {
                 //$report[$key]['ANS']='NOV';
                 $report[$key]['ANS']='0';
             }
-            if(is_null($value['timeringing']) && is_null($value['progress']) && ! is_null( $value['timehangup'] )) {
+            if(is_null($value['timeringing']) && is_null($value['progress']) && ! is_null( $value['timehangup'] ) && is_null($value['timeup'])) {
                 $report[$key]['PDD'] = round($value['timehangup'] - $value['timestart'], 2);
             }
 
