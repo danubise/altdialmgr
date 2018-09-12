@@ -1,68 +1,52 @@
-#!/usr/bin/php
+#!/bin/php
 <?php
-/**
- * Created by PhpStorm.
- * User: slava
- * Date: 20.05.15
- * Time: 14:51
- */
+include ('../internal_config.php');
 ini_set('default_charset', 'utf-8');
-date_default_timezone_set("Europe/Moscow");
+date_default_timezone_set("Europe/Samara");
 error_reporting(E_ALL & ~(E_STRICT|E_NOTICE));
 $config = array(
-    'host'=>"localhost",
-    'user'=>"test",
-    'password'=>"test",
-    'database'=>"callwaytest",
-    'manager_login'=>"dialmanager",
-    'manager_password'=>"dialmanager",
-    'manager_host'=>"95.141.192.26",
-    'manager_port'=>"5038",
-    'logfile'=>"/var/log/checker.log",
     'debug'=>true, //if true log will show to desktop
     'monitor'=>"/var/spool/asterisk/monitor/",
     'context'=> "checker", //"managerd",
     'recordcontext' => "cwc_playwa",
-    'dialcontext'=>"manager",
+    'dialcontext'=>"make-external-call",
     'CallerID'=>"74951674500",
-    'log_file' => "/var/www/html/dialmanager/core/checker.log",
+    'log_file' => $_config['checker_all_log'],
     'log_write' => "file",
     //'log_level' => "a"
-
 );
 $configami= array(
-    'log_file' => "/var/www/html/dialmanager/core/ami_checker.log",
+    'log_file' => "/var/log/asterisk/ami_checker.log",
     'log_write' => "file",
 );
 include('mysqli.php');
 include('ami.php');
 include('log.php');
-$routename=$argv[1];
+$routemd5hash=$argv[1];
+$CallerID=$argv[2];
 $log = new Log($config);
 $amilog = new Log($configami);
 $ami=new Ami();
-$db= new db($config);
+$db= new db($_config['mysql']);
 
-
-$log->SetGlobalIndex($routename);
+$log->SetGlobalIndex($routemd5hash);
 
 $errno="";
 $errstr="";
-//$call=array("1"=>"iax2/1111@from-internal");
-//$data=array("1","2","3","4");
-$log->debug($config);
-    $log->info("Checker start for route ".$routename);
-$query="`id`,`number` from `processing` where `checkstart` = 0 and `routename` like '".$routename."' AND `number` <>''";
 
+$log->debug($config);
+$log->debug($_config);
+$log->info("Checker start for route ".$routemd5hash." and CID=".$CallerID);
+$query="`id`,`number` from `processing` where `checkstart` = 0 and `md5hash` = '".$routemd5hash."' AND `number` <>''";
+$log->debug($query);
 
 $data=$db->select($query, 1);
-//logger($db->query->last,"query",$config['debug']);
-//logger($data,'data from tables',$config['debug']);
+
 if(!is_array($data)){
     $log->info("Have no data from tables, process will die !!!!!!!!!");
     die;
 }
-//logger($db->query->last);
+
 
 $i=0;
 $numberforami= array();
@@ -97,12 +81,13 @@ foreach($data as $key=>$value){
     $log->info("current ".$i,"query94");
     $numberforami[$key]['number']= $data[$key]['number'];
     $numberforami[$key]['actionid']=$value['id'].$value['number'];
-    //logger($data[$action]['originate'], "", $config['debug']);
 }
+$socket="";
 
-$socket = fsockopen($config['manager_host'],$config['manager_port'], $errno, $errstr, 10);
+$log->info("Try to open asterisk manager socket");
+$socket = fsockopen($_config['manager']['host'],$_config['manager']['port'], $errno, $errstr, 10);
+
 $log->info($socket,"socket");
-
 
 if (!$socket){
     echo "$errstr ($errno)\n";
@@ -111,11 +96,11 @@ if (!$socket){
 }
 else{
     $log->info("start main module");
-	date_default_timezone_set('Europe/Moscow');
+	date_default_timezone_set('Europe/Samara');
 
     $login_data=array(
-        "UserName"=>$config['manager_login'],
-        "Secret"=>$config['manager_password']
+        "UserName"=>$_config['manager']['login'],
+        "Secret"=>$_config['manager']['password']
     );
     $login=$ami->Login($login_data);
     $log->info($login,"Authentication");
@@ -153,7 +138,6 @@ else{
 
     $event="";
     $action=false;
-    //logger("start","",$config['debug']);
 
     $state="";
     $response = array(
@@ -312,8 +296,6 @@ else{
                             break;
                         }
                     }
-
-                    //logger(print_r($evar,true), "Response", $config['debug']);
                 }
                 if (isset($evar['Event'])) {
                     $needbreak=false;
@@ -403,8 +385,7 @@ else{
                                         foreach ($data[$key]['Hangup'] as $key1 => $value) {
                                             if ($evar['Uniqueid'] === $value['Uniqueid']) {
                                                 $data[$key]['Hangup'][$key1]['Ringing'] = microtime(true);
-                                                // logger(print_r($evar,true),"",$config['debug']);
-                                               // logger(print_r($task, true), $data[$key]['number'], $config['debug']);
+
                                             }
                                         }
                                         }
@@ -434,8 +415,7 @@ else{
                                                // $db->update("processing", "timeringing," . microtime(true), "id=" . $data[$key]['id']);
                                                 $data[$key]['Hangup'][$key1]['Ringing'] = $evar['Timestamp'];
                                                 //$data[$key]['Hangup'][$key1]['Ringing'] = microtime(true);
-                                                //logger(print_r($evar,true),"",$config['debug']);
-                                                //logger(print_r($task, true), $data[$key]['number'], $config['debug']);
+
                                                 $needbreak=true;
                                                 break;
                                             }
@@ -499,8 +479,7 @@ else{
                                             $data[$key]['Hangup'][0]['Exist'] = 0;
                                             $data[$key]['Channel'] =$ami->GetChannel($evar);
                                             //$db->update("processing", "channel," . $data[$key]['Channel'], "id=" . $data[$key]['id']." AND `channel` IS NULL LIMIT 1");
-                                            // logger(print_r($evar,true),"",$config['debug']);
-                                            //logger(print_r($data[$key], true), $data[$key]['number'], $config['debug']);
+
                                             $needbreak=true;
                                         }
 
@@ -520,8 +499,6 @@ else{
                                                 //$t = $t + 0.5;
                                                 $db->update("processing", "timeringing," .  $evar['Timestamp'], "id=" . $data[$key]['id']);
                                             }
-                                            //logger("**** set ringing " . $t, "", $config['debug']);
-                                            //logger(print_r($task, true), $data[$key]['number'], $config['debug']);
                                                 $needbreak=true;
                                         }
                                         break;
@@ -531,8 +508,6 @@ else{
                                             $state = "Ring";
                                             $data[$key]['Hangup'][1]['Uniqueid'] = $evar['Uniqueid'];
                                             $data[$key]['Hangup'][1]['Exist'] = 0;
-                                            //  logger(print_r($evar,true),"",$config['debug']);
-                                            //logger(print_r($task, true), $data[$key]['number'], $config['debug']);
                                             $needbreak=true;
                                             //die;
 
@@ -544,7 +519,7 @@ else{
                                 }
                                 break;
                             case "Hangup":
-                                //logger(print_r($evar,true),"",$config['debug']);
+
 /*
 2015-11-26 12:08:16 debug[784523125485] Array
 2015-11-26 12:08:16 debug[784523125485] (
@@ -569,8 +544,7 @@ else{
                                         $data[$key]['Hangup'][$key1]['Exist'] = 1;
                                         $data[$key]['Hangup'][$key1]['Cause'] = $evar['Cause'];
                                         $data[$key]['Hangup'][$key1]['Cause-txt'] = $evar['Cause-txt'];
-                                        //  logger(print_r($evar,true),"",$config['debug']);
-                                        //logger(print_r($task, true), $data[$key]['number'], $config['debug']);
+
 
                                     }
                                 }
@@ -604,18 +578,18 @@ else{
                                                 $db->update("processing", "timering," . $t, "id=" . $data[$key]['id']);
                                             }
                                             $db->update("processing",'checkstart,1','id='.$data[$key]['id' ]);
-                                            //logger("1Hangup number ".$data[$key]['number' ], "$data[$key]['number'] ", $config['debug']);
+
                                             unset($data[$key]);
                                         }
                                     } else {
                                         $db->update("processing",'checkstart,1','id='.$data[$key]['id' ]);
-                                        //logger("2Hangup number ".$data[$key]['number' ], $data[$key]['number'], $config['debug']);
+
                                         unset($data[$key]);
                                         //$needbreak=true;
                                         //$action = false;
                                     }
                                     // $action = false;
-                                    //logger("size of array is -".sizeof($data), "size", $config['debug']);
+
                                 }
 
                                 //die;
@@ -640,8 +614,6 @@ else{
                                 if (stripos($evar['Channel1'], $data[$key]['number']) !== false) {
                                     //$data[$key]['Hangup'][2]['Uniqueid'] = $evar['Uniqueid2'];
                                     //$data[$key]['Hangup'][2]['Exist'] = 0;
-                                    //logger(print_r($evar,true),"",$config['debug']);
-                                    //logger(print_r($data[$key], true), $data[$key]['number'], $config['debug']);
                                 }
                                 break;
                             case "Dial":
@@ -670,10 +642,7 @@ else{
                                             $db->update("processing", "timering," . $t, "id=" . $data[$key]['id']);
                                             $data[$key]['Hangup'][2]['Uniqueid'] = $evar['DestUniqueID'];
                                             $data[$key]['Hangup'][2]['Exist'] = 0;
-                                            //logger("*** Set time " . $t, "", $config['debug']);
 
-                                            //logger(print_r($evar,true),"",$config['debug']);
-                                            //logger(print_r($data[$key1], true), $config['debug']);
                                         }
                                     }
                                 }
@@ -748,48 +717,8 @@ function channeltonumnber($c){
 function process($data){
 
 }
-function logger1($data,$id="",$view=false){
-    $file=$GLOBALS['config']['logfile'];
-    $log = new Log($GLOBALS['config']);
-    $td=microtime(true);//date('Y-m-d H:i:s');
-    if($id=="") {
-        $scriptname = "checker.php";
-    }
-    else{
-        $scriptname="";
-    }
 
-    $head="$td $scriptname $id ";
-    $data=$head.$data;
-    $data=str_replace("\n","\n".$head,$data);
-    $data=trim($data)."\n";
-    if($data==""){
-        $data="'' - empty";
-    }
 
-    if ($view) {
-        echo $data;
-    } else {
-       //file_put_contents($file, $data, FILE_APPEND);
-        $log->debug($data);
-    }
-}
-function logger($data,$id="",$view=false){
-    if(is_array($data)){
-        foreach($data as $key=>$value){
-            logger1($key."=>",$id,$view);
-            if(is_array($value)){
-                logger1("array",$id,$view);
-                logger($value,$id,$view);
-            }
-            else{
-                logger1($value,$id,$view);
-            }
-        }
-    }else {
-        logger1($data,$id,$view);
-    }
-}
 function recalculate($db,$eventoperate,$log){
     foreach($eventoperate as $channel=>$channelgroup){
         if(isset($channelgroup[1]) && isset($channelgroup[2])){
