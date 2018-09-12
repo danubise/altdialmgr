@@ -154,18 +154,20 @@ class Tester extends Core_controller {
      * @param $id
      */
     public function delete($md5hash) {
+        $functionName=$this->filename."function delete ";
         $md5hash=urldecode( $md5hash);
         $query="DELETE FROM `processing` WHERE `md5hash`='".$md5hash."'";
         $this->log->debug("testr.php  function delete ".$query);
-        $this->db->query($query);
+        $this->db->query($functionName.$query);
 
         $query="DELETE FROM `test_status` WHERE `md5hash`='".$md5hash."'";
         $this->log->debug("testr.php  function delete ".$query);
-        $this->db->query($query);
+        $this->db->query($functionName.$query);
 
         header('Location: '.baseurl('tester/listtable'));
+        die;
     }
-    public function report($id){
+    public function report($md5hash){
         /*
          *  `id` ,
 `routename` ,
@@ -180,13 +182,12 @@ class Tester extends Core_controller {
 `status` ,
 `recordfile`
          */
-        $id=urldecode( $id);
-        $query="* from `processing` where `routename`='".$id."' and `number`<>''";
-        //echo urldecode( $query);
-        //die;
+        $md5hash=urldecode( $md5hash);
+        $functionName=$this->filename."function report ";
+        $query="* from `processing` where `md5hash`='".$md5hash."' and `number`<>''";
+        $this->db->query($functionName.$query);
         $data=$this->db->select($query);
-        //print_r($data);
-        //die;
+
         foreach($data as $key=>$value){
             //print_r($value);
             $report[$key]['number']=$value['number'];
@@ -332,9 +333,12 @@ class Tester extends Core_controller {
 
         }
 //die;
+        $query="* from `test_status` where `md5hash`='".$md5hash."'";
+        $this->db->query($functionName.$query);
+        $testStatus=$this->db->select($query);
         $view = array(
             'var' => array('reports'=>$report,
-                'routename'=>$id,
+                'routename'=>$testStatus['name'],
                 'numberpoolname'=>$data[0]['numberpoolname']),
             'view' => 'tester/report',
             'css' => array(baseurl('pub/css/jquery.dataTables.min.css')),
@@ -372,23 +376,39 @@ class Tester extends Core_controller {
 
     }
     public function getaudio($data){
-        $file = $this->db->select("`recordfile` from `processing` where `id`=".$data,0);
-        $fp=fopen($file, "r");
-        header('Content-Type: audio/wav');
-        header('Content-disposition: attachment; filename="'.end(explode("/",str_replace(":", "-", $file))).'"');
-        header("Content-transfer-encoding: binary");
-        fpassthru($fp);
-        fclose($fp);
+        $functionName=$this->filename."function getaudio ";
+        $query = "`recordfile` from `processing` where `id`=".$data;
+        $this->db->query($functionName.$query);
+        $file = $this->db->select($query,0);
+        $this->db->query($functionName."file name :".$file);
+        if(trim($file) !=""){
+            $fp=fopen($file, "r");
+            header('Content-Type: audio/wav');
+            header('Content-disposition: attachment; filename="'.end(explode("/",str_replace(":", "-", $file))).'"');
+            header("Content-transfer-encoding: binary");
+            fpassthru($fp);
+            fclose($fp);
+        }else{
+            $this->log->error($functionName."File name is empty ".$data);
+        }
 
     }
     public function getaudio2($data){
-        $file = $this->db->select("`recordfile2` from `processing` where `id`=".$data,0);
-        $fp=fopen($file, "r");
-        header('Content-Type: audio/wav');
-        header('Content-disposition: attachment; filename="'.end(explode("/",str_replace(":", "-", $file))).'"');
-        header("Content-transfer-encoding: binary");
-        fpassthru($fp);
-        fclose($fp);
+        $functionName=$this->filename."function getaudio2 ";
+        $query = "`recordfile2` from `processing` where `id`=".$data;
+        $this->db->query($functionName.$query);
+        $file = $this->db->select($query,0);
+        $this->db->query($functionName."file name :".$file);
+        if(trim($file) !="") {
+            $fp = fopen($file, "r");
+            header('Content-Type: audio/wav');
+            header('Content-disposition: attachment; filename="' . end(explode("/", str_replace(":", "-", $file))) . '"');
+            header("Content-transfer-encoding: binary");
+            fpassthru($fp);
+            fclose($fp);
+        }else{
+            $this->log->error($functionName."File name is empty ".$data);
+        }
 
     }
     public function logout() {
