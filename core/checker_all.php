@@ -1,15 +1,14 @@
 #!/bin/php
 <?php
-include ('../internal_config.php');
+include ('/var/www/html/dialmanager/internal_config.php');
 ini_set('default_charset', 'utf-8');
 date_default_timezone_set("Europe/Samara");
 error_reporting(E_ALL & ~(E_STRICT|E_NOTICE));
 $config = array(
     'debug'=>true, //if true log will show to desktop
     'monitor'=>"/var/spool/asterisk/monitor/",
-    'context'=> "checker", //"managerd",
+    'context'=> $_config['context'], //"managerd",
     'recordcontext' => "cwc_playwa",
-    'dialcontext'=>"make-external-call",
     'CallerID'=>"74951674500",
     'log_file' => $_config['checker_all_log'],
     'log_write' => "file",
@@ -51,7 +50,7 @@ if(!is_array($data)){
 $i=0;
 $numberforami= array();
 foreach($data as $key=>$value){
-    $data[$key]['recordfile']=strtolower($routename)."_".str_replace(array("-",":"," "),"_",date('Y-m-d H:i:s'))."_".$data[$key]['number']."_".$data[$key]['id'];
+    $data[$key]['recordfile']=strtolower($routemd5hash)."_".str_replace(array("-",":"," "),"_",date('Y-m-d H:i:s'))."_".$data[$key]['number']."_".$data[$key]['id'];
     $data[$key]['recordfile2']=str_replace(array("-",":"," "),"_",date('Y-m-d H:i:s'))."_".$data[$key]['number']."_answer"."_".$data[$key]['id'];
     $data[$key]['recfile']=explode(" ",php_uname());
 
@@ -154,7 +153,7 @@ else{
     //foreach($data as $key=>$value) {
 
     $log->info("start sdp monitor");
-    system("/usr/bin/php -f /var/www/html/dialmanager/core/sdp_check.php ".$routename." >> /var/log/checker.log & 2>/dev/null");
+    system("/usr/bin/php -f /var/www/html/dialmanager/core/sdp_check.php ".$routemd5hash." >> /var/log/asterisk/sdp_checker.log & 2>/var/log/asterisk/sdp_checker_err.log");
     sleep(2);
     $log->info("start sdp monitor done");
 
@@ -178,7 +177,7 @@ else{
                 //$log->info("Connection status ".print_r(stream_get_meta_data( $socket),true),"socketstatus");
                 $log->info("Current Action - [".$action."] number - [".$data[$action]['number']."]","status");
                 $log->debug("nextnumb - [".$nextnumb."]","status");
-                $query="`id`,`number` from `processing` where `checkstart` = 0 and `routename` like '".$routename."' AND `number` <>''";
+                $query="`id`,`number` from `processing` where `checkstart` = 0 and `md5hash` = '".$routemd5hash."' AND `number` <>''";
                 $data1=$db->select($query, 1);
                 if(!is_array($data1)){
                     $log->info("Have no data from tables, process will die !!!!!!!!!");
@@ -250,8 +249,8 @@ else{
                                     if ($evar['ChannelStateDesc'] == "Down") {
                                         $amilog->debug($evar, "NewchannelDown" . $evar['Exten']);
                                         $createdchannel = $ami->getchanneldetail($evar['Channel']);
-                                        $db->update("processing", "channel," . $createdchannel['channelfull'], "`routename`='" . $routename . "' AND `number`='" . $createdchannel['number'] . "' AND `channel` IS NULL LIMIT 1");
-                                        $amilog->debug($db->query->last, "NewchannelDown" . $evar['Exten']);
+                                        $db->update("processing", "channel," . $createdchannel['channelfull'], "`md5hash` = '".$routemd5hash."' AND `number`='" . $createdchannel['number'] . "' AND `channel` IS NULL LIMIT 1");
+                                        $log->debug($db->query->last, "NewchannelDown" . $evar['Exten']);
                                         $br = true;
                                         $nextnumb=true;
                                     }
@@ -650,11 +649,9 @@ else{
                                 break;
 
                             default:
-                                //print_r($evar);
                         }
                         if($breakfor){
                             $breakfor=false;
-                            //die;
                             break;
                         }
                     }
@@ -664,16 +661,14 @@ else{
             $event .= $dataevent;
             $last = $dataevent;
         }
-    //}
 
     $amilog->debug($eventoperation,"eventarray");
-
+    $log->debug("Start recalculate function");
     recalculate($db,$eventoperation, $amilog);
     fclose($socket);
-    $db= new db($config);
+
     $log->info("Getting log of calls","logdata");
-    $channels=$db->select("`channel` from `processing` where `routename`='".$routename."'");
-    //echo $db->query->last."\n";
+    $channels=$db->select("`channel` from `processing` where `md5hash`='".$routemd5hash."'");
     $log->info("final work get asteirks data","final");
     $log->debug($db->query->last,"final");
     $log->debug($channels,"tested channels");
@@ -686,14 +681,10 @@ else{
                 $txt.=$value1."\n";
             }
             $txt=addslashes($txt);
-            $db->update("processing",array('logdata'=>$txt),"`routename`='".$routename."' and `channel`='".$value."'");
+            $db->update("processing",array('logdata'=>$txt),"`md5hash`='".$routemd5hash."' and `channel`='".$value."'");
         }else{
             $log->error("Channel id empty","final");
         }
-
-
-        //echo $db->query->last."\n";
-
     }
    // echo "end";
     $log->info("End of work","logdata");

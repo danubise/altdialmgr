@@ -8,46 +8,46 @@
  * Time: 17:21
  */
     $config = array(
-        'host'=>"localhost",
-        'user'=>"test",
-        'password'=>"test",
-        'database'=>"callwaytest",
-        'manager_login'=>"dialmanager",
-        'manager_password'=>"dialmanager",
-        'manager_host'=>"95.141.192.26",
-        'manager_port'=>"5038",
-        'logfile'=>"/var/log/checker.log",
+        'logfile'=>"/var/log/asterisk/sdp_checker.log",
         'debug'=>true, //if true log will show to desktop, false write to file
         'monitor'=>"/var/spool/asterisk/monitor/",
         'context'=> "managerd",
         'recordcontext' => "cwc_playwa",
         'CallerID'=>"7451674500",
-        'log_file' => "/var/www/html/dialmanager/core/checker.log",
+        'log_file' => "/var/log/asterisk/sdp_checker.log",
         'log_write' => "file",
     );
-
-    include('mysqli.php');
+date_default_timezone_set("Europe/Samara");
+ini_set('default_charset', 'utf-8');
+include ('/var/www/html/dialmanager/internal_config.php');
+include('mysqli.php');
 include('ami.php');
 include('log.php');
 include('Parcer.php');
 $parcer= new Parcer();
 $log = new Log($config);
 $ami= new Ami();
-    ini_set('default_charset', 'utf-8');
+$routemd5hash=$argv[1];
+$log->SetGlobalIndex("SDP");
+$log->info("Start with md5hash ".$routemd5hash);
+$log->debug($config);
+$log->debug($_config);
 
-    $file="/var/log/asterisk/full";
-    //$file="/var/log/asterisk/full-20151016";
-    $db= new db($config);
-    $routename=$argv[1];
-    logger($routename,"",$config['debug']);
-    $socket = fsockopen($config['manager_host'],$config['manager_port'], $errno, $errstr, 10);
+
+$file="/var/log/asterisk/full";
+$db= new db($_config['mysql']);
+
+
+
+    $socket = fsockopen($_config['manager']['host'],$_config['manager']['port'], $errno, $errstr, 10);
     if (!$socket){
         echo "$errstr ($errno)\n";
+        die;
     }
     else {
 
 
-        $task = $db->select("`id`,`number` from `processing` where  `routename`='".$routename."' AND `number` <> ''",1);
+        $task = $db->select("`id`,`number` from `processing` where  `md5hash`='".$routemd5hash."' AND `number` <> ''",1);
         print_r($task);
         echo sizeof( $task);
         $stop=0;
@@ -55,16 +55,16 @@ $ami= new Ami();
         //die;
 
         $size = filesize($file)-10;
-        logger( "start size = ".$size."\n",'',$config['debug']);
+        $log->info( "start size = ".$size."\n");
         $time1=microtime(true);
         $starttime=$time1-50;
         $maxworktime=sizeof($task)*40;
         $stop=array();
-        echo "timeout after ".$maxworktime;
+        $log->debug( "timeout after ".$maxworktime);
         $finalquery="";
         $resultarray=array();
         $progressok=array();
-
+        $oldtime=microtime(true);
         while (true) {
             $timecurrent=microtime(true);
             clearstatcache();
@@ -82,7 +82,7 @@ $ami= new Ami();
             if($timecurrent-5>$oldtime){
                 $oldtime=$timecurrent;
                 $log->info("SDP online","status");
-                $query="`id`,`number` from `processing` where `checkstart` = 0 and `routename` like '".$routename."' AND `number` <>''";
+                $query="`id`,`number` from `processing` where `checkstart` = 0 and `md5hash`='".$routemd5hash."' AND `number` <>''";
                 $data1=$db->select($query, 1);
                 $log->debug($db->query->last);
                 if(!is_array($data1)){
@@ -192,7 +192,7 @@ $ami= new Ami();
                 echo "Check db status\n";
                 echo "timeout after".round($maxworktime-($timecurrent- $starttime))."\n";
                 logger( "Check db status",'',$config['debug']);
-                $task1 = $db->select("`id`,`number` from `processing` where  `status`=0 and `routename`='".$routename."' and `number`<>''",0);
+                $task1 = $db->select("`id`,`number` from `processing` where  `status`=0 and `md5hash`='".$routemd5hash."' and `number`<>''",0);
                 if (!is_array($task1) ) {
                     echo "have no task";
                     foreach($resultarray as $channelid=>$eventtime){
