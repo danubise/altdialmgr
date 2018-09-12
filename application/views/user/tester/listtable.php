@@ -11,28 +11,21 @@
 
 <form method="post">
     <table class="table table-bordered table-striped">
-        <tr><td>Маршрут</td><td>Состояние</td><td>Операции</td></tr>
+        <tr><td>Route</td><td>Status</td><td>Action</td></tr>
         <?php
-        if(is_array($route)) {
-            foreach ($route as $key => $value):
-                $count=$status[ $value]['complite'];
-                $total=$count + $status[ $value]['finish'];
-                if($status[ $value]['finish']>0){
-                    $process="В процессе";
-
-                }else{
-                    $process="Остановлена";
-                }
+        if(is_array($userTests)) {
+            foreach ($userTests as $key => $value):
                 ?>
                 <tr>
-                    <td><?= $value ?></td>
-                    <td><?= $process ?> завершено <?= $count ?> из <?= $total ?></td>
-                    <td><a href="<?= $href ?>"><?= $avalue ?></a>
-                        <a href="<?= baseurl('tester/activate/' . $value) ?>">Запустить</a>/
-                        <a href="<?= baseurl('tester/deactivate/' . $value) ?>">Остановить</a>/
-                        <a href="<?= baseurl('tester/delete/' .$value) ?>">Удалить</a>/
-                        <a href="<?= baseurl('tester/reset/' . $value) ?>">Обнулить</a>/
-                    <a href="<?= baseurl('tester/report/' .$value) ?>">Отчет</a></td>
+                    <td><?= $value['name'] ?></td>
+                    <td><?= $value['status'] ?> завершено <?= $value['stop'] ?> из <?= $value['total'] ?></td>
+                    <td>
+                        <a href="<?= baseurl('tester/activate/' . $value['md5hash']) ?>">Start</a>/
+                        <a href="<?= baseurl('tester/deactivate/' . $value['md5hash']) ?>">Stop</a>/
+                        <a href="<?= baseurl('tester/delete/' .$value['md5hash']) ?>">Del</a>/
+                        <a href="<?= baseurl('tester/reset/' . $value['md5hash']) ?>">Reset</a>/
+                        <a href="<?= baseurl('tester/report/' .$value['md5hash']) ?>">Report</a>
+                    </td>
                 </tr>
             <?php endforeach;
         }?>

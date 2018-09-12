@@ -15,41 +15,25 @@ class Tester extends Core_controller {
         $this->load_model('trunk_model');
         $this->load_model('numberpool_model');
         $config = array(
-            'log_file' => "/var/www/html/dialmanager/core/checker.log",
+            'log_file' => "/var/log/httpd/webaction.log",
             'log_write' => "file",
 
         );
         $this->log= new Log($config);
-
-
     }
 
     public function index() {
-        if(isset($_POST['add'])) {
-
-        }
-
         $this->listtable();
 
     }
     public function listtable() {
-        $listtest=$this->db->select("DISTINCT `routename` from `processing` ORDER BY `processing`.`id` DESC ");
-        $status=array();
-        if(is_array($listtest)) {
-            foreach ($listtest as $key => $value) {
-
-                $status[$value]['complite'] = $this->db->select(" count(*) FROM `processing` WHERE `routename`='$value' and `checkstart`=1 and `number`<>''", 0);
-                $status[$value]['finish'] = $this->db->select(" count(*) FROM `processing` WHERE `routename`='$value' and `checkstart`=0 and `number`<>''", 0);
-            }
-        }
+        $userTests = $this->db->select("st.name, st.status,st.md5hash, SUM(IF(`pr`.`checkstart`=1, 1, 0)) as `start`, SUM(IF(`pr`.`checkstart`=0, 1, 0)) as `stop`, COUNT(*) as total FROM `test_status` as st, `processing` as pr WHERE st.md5hash=pr.md5hash GROUP BY st.name DESC ");
 
         $view = array(
             'view' => 'tester/listtable',
-            'module' => 'Создание нового теста',
+            'module' => 'User tests list',
             'var' => array(
-                'route'=>$listtest,
-                'status'=>$status
-
+                'userTests'=>$userTests,
             )
         );
         $this->view($view);
@@ -57,18 +41,24 @@ class Tester extends Core_controller {
     }
     public function create() {
         if(isset($_POST['add'])) {
-           // print_r($_POST);
-            $poolname=$this->db->select("`name` from   `dm_poolgroup` where `id`='".$_POST['poolgroup']."'; ",0);
-            $q="INSERT INTO `processing` (`routename`, `number`, `numberpoolname`) SELECT '".$_POST['name']."', `number`,'".$poolname."' FROM `dm_numberpool` where `poolgroup`='".$_POST['poolgroup']."'; ";
+            $md5hash = md5($_POST['name'].$_POST['poolgroup'].$_SESSION['id']);
+            $createNewTestQuery = "INSERT INTO `test_status` (`md5hash`, `status`, `userid`, `name`) ".
+                                "VALUES ( '".$md5hash."', 'stop', ".$_SESSION['id'].",'".$_POST['name']."' )";
+            $this->log->debug("tester.php function create createNewTestQuery ".$createNewTestQuery);
+            $this->db->query($createNewTestQuery);
+
+            $poolname=$this->db->select("`name` from `dm_poolgroup` where `id`='".$_POST['poolgroup']."'; ",0);
+            $q="INSERT INTO `processing` (`routename`, `number`, `numberpoolname`, `md5hash`) ".
+                "SELECT '".$_POST['name']."', `number`,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
+                "where `poolgroup`='".$_POST['poolgroup']."';";
             $this->db->query($q);
-            //echo $q;
-            //die;
+            $this->log->debug("tester.php function create q ".$q);
             header('Location: '.baseurl('tester/listtable'));
             die;
         }
         $pgl=$this->numberpool_model->GetListGroup();
         $poolgrouplist=$this->list_model->GetList($pgl,"poolgroup",0);
-        $campany=$this->db->select("`id`,`name`,`status` from `Company` where `status`<'2'");
+
         $this->view(
             array(
                 'view' => 'tester/create',
@@ -84,8 +74,8 @@ class Tester extends Core_controller {
         printarray($_config);
         die;
         $id=urldecode( $id);
-        $commnad="/usr/bin/php -f /var/www/html/dialmanager/core/checker.php ".$id." >> /var/log/checker.log & 2>/dev/null";
-        $run = system("/usr/bin/php -f /var/www/html/dialmanager/core/checker_all.php ".$id." >> /var/log/checker.log & 2>/dev/null");
+        //$commnad=$_config['php']." -f ".$_config['checker']." ".$id." >> ".$_config['checker_log']." & 2>/dev/null";
+        $run = system($_config['php']. " -f ".$_config['checker_all']." ".$id." >> ".$_config['checker_all_log']." & 2>".$_config['checker_all_err_log']);
         header('Location: '.baseurl('tester/listtable'));
     }
     /**
@@ -138,10 +128,16 @@ class Tester extends Core_controller {
     /**
      * @param $id
      */
-    public function delete($id) {
-        $id=urldecode( $id);
-        $query="DELETE FROM `processing` WHERE `routename`='".$id."'";
+    public function delete($md5hash) {
+        $md5hash=urldecode( $md5hash);
+        $query="DELETE FROM `processing` WHERE `md5hash`='".$md5hash."'";
+        $this->log->debug("testr.php  function delete ".$query);
         $this->db->query($query);
+
+        $query="DELETE FROM `test_status` WHERE `md5hash`='".$md5hash."'";
+        $this->log->debug("testr.php  function delete ".$query);
+        $this->db->query($query);
+
         header('Location: '.baseurl('tester/listtable'));
     }
     public function report($id){
