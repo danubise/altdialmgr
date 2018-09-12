@@ -89,12 +89,20 @@ class Tester extends Core_controller {
     /**
      * @param $id
      */
-    public function deactivate($id) {
-        $id=urldecode( $id);
-        $this->db->update( "processing",'checkstart,0',"`routename`='".$id."' and `status`=0");
-        $this->log->debug($this->db->query->last);
+    public function deactivate($md5hash) {
+        $md5hash=urldecode( $md5hash);
+        $checkTestStatus = $this->db->select("`status` from `test_status` where `md5hash`='".$md5hash."'", false);
+        $this->log->debug("tester.php function deactivate ".$this->db->query->last);
+        $this->log->info("tester.php function deactivate The test ".$md5hash." in the ".$checkTestStatus." status");
+        if($checkTestStatus != "stop") {
+            $this->db->update("test_status",'status,stop',"`md5hash`='".$md5hash."'");
+            $this->log->debug("tester.php function deactivate ".$this->db->query->last);
+            $this->db->update( "processing",'checkstart,0',"`md5hash`='".$md5hash."' and `status`=0");
+            $this->log->debug("tester.php function deactivate ".$this->db->query->last);
+        }
 
         header('Location: '.baseurl('tester/listtable'));
+        die;
     }
     public function reset($id) {
         $id=urldecode( $id);
