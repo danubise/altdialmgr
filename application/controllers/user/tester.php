@@ -41,11 +41,12 @@ class Tester extends Core_controller {
 
     }
     public function create() {
+        $functionName=$this->filename."function activate ";
         if(isset($_POST['add'])) {
             $md5hash = md5($_POST['name'].$_POST['poolgroup'].$_SESSION['id']);
             $createNewTestQuery = "INSERT INTO `test_status` (`md5hash`, `status`, `userid`, `name`) ".
                                 "VALUES ( '".$md5hash."', 'stop', ".$_SESSION['id'].",'".$_POST['name']."' )";
-            $this->log->debug("tester.php function create createNewTestQuery ".$createNewTestQuery);
+            $this->log->debug($functionName." createNewTestQuery ".$createNewTestQuery);
             $this->db->query($createNewTestQuery);
 
             $poolname=$this->db->select("`name` from `dm_poolgroup` where `id`='".$_POST['poolgroup']."'; ",0);
@@ -53,7 +54,7 @@ class Tester extends Core_controller {
                 "SELECT '".$_POST['name']."', `number`,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
                 "where `poolgroup`='".$_POST['poolgroup']."';";
             $this->db->query($q);
-            $this->log->debug("tester.php function create q ".$q);
+            $this->log->debug($functionName." q ".$q);
             header('Location: '.baseurl('tester/listtable'));
             die;
         }
@@ -72,17 +73,18 @@ class Tester extends Core_controller {
      */
     public function activate($md5hash) {
         global $_config;
+        $functionName=$this->filename."function activate ";
         $md5hash=urldecode( $md5hash);
         $checkTestStatus = $this->db->select("`status` from `test_status` where `md5hash`='".$md5hash."'", false);
-        $this->log->debug("tester.php function activate ".$this->db->query->last);
+        $this->log->debug($functionName.$this->db->query->last);
         if($checkTestStatus == "stop") {
             $this->db->update("test_status",'status,in progress',"`md5hash`='".$md5hash."'");
-            $this->log->debug("tester.php function activate ".$this->db->query->last);
-            $this->log->info("Start checker script for ".$md5hash." test");
+            $this->log->debug($functionName.$this->db->query->last);
+            $this->log->info($functionName."Start checker script for ".$md5hash." test");
             $command = $_config['php'] . " -f " . $_config['checker_all'] . " " . $md5hash . " >> " . $_config['checker_all_log'] . " & 2>" . $_config['checker_all_err_log'];
-            $this->log->debug("tester.php function activate checker script system comman ".$command);
+            $this->log->debug($functionName." checker script system comman ".$command);
             $run = system($command);
-            $this->log->info("tester.php function activate checker script system comman output ".$run);
+            $this->log->info($functionName." checker script system comman output :'".$run."'");
         }
         header('Location: '.baseurl('tester/listtable'));
         die;
@@ -91,15 +93,16 @@ class Tester extends Core_controller {
      * @param $id
      */
     public function deactivate($md5hash) {
+        $functionName=$this->filename."function deactivate ";
         $md5hash=urldecode( $md5hash);
         $checkTestStatus = $this->db->select("`status` from `test_status` where `md5hash`='".$md5hash."'", false);
-        $this->log->debug("tester.php function deactivate ".$this->db->query->last);
-        $this->log->info("tester.php function deactivate The test ".$md5hash." in the ".$checkTestStatus." status");
+        $this->log->debug($functionName.$this->db->query->last);
+        $this->log->info($functionName." The test ".$md5hash." in the ".$checkTestStatus." status");
         if($checkTestStatus != "stop") {
             $this->db->update("test_status",'status,stop',"`md5hash`='".$md5hash."'");
-            $this->log->debug("tester.php function deactivate ".$this->db->query->last);
+            $this->log->debug($functionName.$this->db->query->last);
             $this->db->update( "processing",'checkstart,0',"`md5hash`='".$md5hash."' and `status`=0");
-            $this->log->debug("tester.php function deactivate ".$this->db->query->last);
+            $this->log->debug($functionName.$this->db->query->last);
         }
 
         header('Location: '.baseurl('tester/listtable'));
@@ -157,12 +160,12 @@ class Tester extends Core_controller {
         $functionName=$this->filename."function delete ";
         $md5hash=urldecode( $md5hash);
         $query="DELETE FROM `processing` WHERE `md5hash`='".$md5hash."'";
-        $this->log->debug("testr.php  function delete ".$query);
-        $this->db->query($functionName.$query);
+        $this->log->debug($functionName.$query);
+        $this->db->query($query);
 
         $query="DELETE FROM `test_status` WHERE `md5hash`='".$md5hash."'";
-        $this->log->debug("testr.php  function delete ".$query);
-        $this->db->query($functionName.$query);
+        $this->log->debug($functionName.$query);
+        $this->db->query($query);
 
         header('Location: '.baseurl('tester/listtable'));
         die;
