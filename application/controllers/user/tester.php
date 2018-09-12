@@ -69,14 +69,22 @@ class Tester extends Core_controller {
     /**
      * @param $id
      */
-    public function activate($id) {
+    public function activate($md5hash) {
         global $_config;
-        printarray($_config);
-        die;
-        $id=urldecode( $id);
-        //$commnad=$_config['php']." -f ".$_config['checker']." ".$id." >> ".$_config['checker_log']." & 2>/dev/null";
-        $run = system($_config['php']. " -f ".$_config['checker_all']." ".$id." >> ".$_config['checker_all_log']." & 2>".$_config['checker_all_err_log']);
+        $md5hash=urldecode( $md5hash);
+        $checkTestStatus = $this->db->select("`status` from `test_status` where `md5hash`='".$md5hash."'", false);
+        $this->log->debug("tester.php function activate ".$this->db->query->last);
+        if($checkTestStatus == "stop") {
+            $this->db->update("test_status",'status,in progress',"`md5hash`='".$md5hash."'");
+            $this->log->debug("tester.php function activate ".$this->db->query->last);
+            $this->log->info("Start checker script for ".$md5hash." test");
+            $command = $_config['php'] . " -f " . $_config['checker_all'] . " " . $md5hash . " >> " . $_config['checker_all_log'] . " & 2>" . $_config['checker_all_err_log'];
+            $this->log->debug("tester.php function activate checker script system comman ".$command);
+            $run = system($command);
+            $this->log->info("tester.php function activate checker script system comman output ".$run);
+        }
         header('Location: '.baseurl('tester/listtable'));
+        die;
     }
     /**
      * @param $id
