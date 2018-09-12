@@ -6,6 +6,7 @@
  * Time: 22:39
  */
 class Tester extends Core_controller {
+    private $filename="tester.php ";
     private $log="";
     public function __construct() {
         parent::__construct();
@@ -104,15 +105,25 @@ class Tester extends Core_controller {
         header('Location: '.baseurl('tester/listtable'));
         die;
     }
-    public function reset($id) {
-        $id=urldecode( $id);
+    public function reset($md5hash) {
+        $functionName=$this->filename."function reset ";
+        $md5hash=urldecode( $md5hash);
         $query="`recordfile`,`recordfile2` from `callwaytest`.`processing`
-        where `processing`.`routename` ='".$id."'";
+        where `processing`.`md5hash` ='".$md5hash."'";
         $files=$this->db->select($query);
+        $this->log->debug($functionName.$this->db->query->last);
+        $this->log->debug($files);
         foreach($files as $file) {
-            $c="rm -f ".$file['recordfile'];
-            exec($c);
-            exec("rm -f ".$file['recordfile2']);
+            if(trim($file['recordfile']) != "") {
+                $fileDeleteCommand = "rm -f " . $file['recordfile'];
+                $this->log->debug($functionName . $fileDeleteCommand);
+                exec($fileDeleteCommand);
+            }
+            if(trim($file['recordfile2']) != "") {
+                $fileDeleteCommand = "rm -f " . $file['recordfile2'];
+                $this->log->debug($functionName . $fileDeleteCommand);
+                exec($fileDeleteCommand);
+            }
         }
 
         $query="
@@ -130,14 +141,12 @@ class Tester extends Core_controller {
 `channel` = NULL ,
 `recordfile2` = NULL,
  `logdata` = NULL ,
- `actionid` = NULL WHERE `processing`.`routename` ='".$id."'";
-
-
-        //echo $query."\n";
+ `actionid` = NULL WHERE `processing`.`md5hash` ='".$md5hash."'";
+        $this->log->debug($functionName.$query);
         $this->db->query( $query);
-        //echo $this->db->query->last;
-        //die;
+
         header('Location: '.baseurl('tester/listtable'));
+        die;
     }
 
 
