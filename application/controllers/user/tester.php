@@ -9,6 +9,7 @@ class Tester extends Core_controller {
     private $log="";
     public function __construct() {
         parent::__construct();
+
         $this->module_name = 'Тестер';
         $this->load_model('list_model');
         $this->load_model('trunk_model');
@@ -79,15 +80,12 @@ class Tester extends Core_controller {
      * @param $id
      */
     public function activate($id) {
+        global $_config;
+        printarray($_config);
+        die;
         $id=urldecode( $id);
         $commnad="/usr/bin/php -f /var/www/html/dialmanager/core/checker.php ".$id." >> /var/log/checker.log & 2>/dev/null";
-        //echo "cmd ".$commnad."\n";
-        //die;
-       // $run = system("/usr/bin/php -f /var/www/html/dialmanager/core/sdp_check.php ".$id." >> /var/log/checker.log & 2>/dev/null");
-        //echo "run1 ".$run."\n";
         $run = system("/usr/bin/php -f /var/www/html/dialmanager/core/checker_all.php ".$id." >> /var/log/checker.log & 2>/dev/null");
-        //echo "run2 ".$run."\n";
-        //die;
         header('Location: '.baseurl('tester/listtable'));
     }
     /**
