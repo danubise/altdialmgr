@@ -8,6 +8,7 @@
  * Time: 17:21
  */
     $config = array(
+        'asterisk_logfile' => "/var/log/asterisk/full",
         'logfile'=>"/var/log/asterisk/sdp_checker.log",
         'debug'=>true, //if true log will show to desktop, false write to file
         'monitor'=>"/var/spool/asterisk/monitor/",
@@ -33,8 +34,6 @@ $log->info("Start with md5hash ".$routemd5hash);
 $log->debug($config);
 $log->debug($_config);
 
-
-$file="/var/log/asterisk/full";
 $db= new db($_config['mysql']);
 
 
@@ -46,15 +45,14 @@ $db= new db($_config['mysql']);
     }
     else {
 
-
         $task = $db->select("`id`,`number` from `processing` where  `md5hash`='".$routemd5hash."' AND `number` <> ''",1);
-        print_r($task);
-        echo sizeof( $task);
+
+        $log->debug($db->query->last);
+        $log->debug($task);
+        $log->debug("Count of the tasks:". sizeof( $task));
         $stop=0;
 
-        //die;
-
-        $size = filesize($file)-10;
+        $size = filesize($config['asterisk_logfile'])-10;
         $log->info( "start size = ".$size."\n");
         $time1=microtime(true);
         $starttime=$time1-50;
@@ -70,7 +68,7 @@ $db= new db($_config['mysql']);
             clearstatcache();
             while(true) {
                 clearstatcache();
-                $currentSize = filesize($file);
+                $currentSize = filesize($config['asterisk_logfile']);
 
                 if ($size < $currentSize) {
                     //echo $currentSize."\n";
@@ -93,7 +91,7 @@ $db= new db($_config['mysql']);
             }
 
 
-            $fh = fopen($file, "r");
+            $fh = fopen($config['asterisk_logfile'], "r");
             fseek($fh, $size);
 //echo $size;
             $size=$currentSize;
@@ -152,10 +150,10 @@ $db= new db($_config['mysql']);
                                     }
                                 }
                                 $stop[$chanid]=1;
-                                echo "number = ".$value2['number']."\n";
-                                logger( "number = ".$value2['number'],'',$config['debug']);
-                                echo "channel = ".$t2[1]."\n";
-                                logger( "channel = ".$t2[1],'',$config['debug']);
+
+                                $log->debug( "number = ".$value2['number']);
+
+                                $log->debug( "channel = ".$t2[1]);
                                 $stopkey=0;
                                 foreach ($stop as $value) {
                                     $stopkey++;
@@ -167,8 +165,8 @@ $db= new db($_config['mysql']);
                                         $db->update("processing","progress,".$eventtime,"channel='".$channelid."'");
                                         $log->debug($db->query->last,"SDP142");
                                     }
-                                    logger( $finalquery,'',$config['debug']);
-                                    logger( "End by STOP",'',$config['debug']);
+                                    $log->info( $finalquery);
+                                    $log->info( "End by STOP");
                                     die;
                                 }
 
@@ -180,101 +178,35 @@ $db= new db($_config['mysql']);
                 }
 
                 $data=$a;
-               // print_r($data);
-//die;
             }
 
 
             fclose($fh);
-           // die;
+
             if($time1<$timecurrent-5){
                 $time1=$timecurrent;
-                echo "Check db status\n";
-                echo "timeout after".round($maxworktime-($timecurrent- $starttime))."\n";
-                logger( "Check db status",'',$config['debug']);
+
+                $log->info(  "timeout after".round($maxworktime-($timecurrent- $starttime)));
+                $log->info( "Check db status");
                 $task1 = $db->select("`id`,`number` from `processing` where  `status`=0 and `md5hash`='".$routemd5hash."' and `number`<>''",0);
                 if (!is_array($task1) ) {
                     echo "have no task";
                     foreach($resultarray as $channelid=>$eventtime){
                         $db->update("processing","progress,".$eventtime,"channel='".$channelid."'");
-                        logger($db->query->last,"fromarray",$config['debug']);
+                        $log->debug($db->query->last,"fromarray");
                     }
                     $log->debug( $finalquery,'onlyquery');
                     $log->info( "have no task");
                     die;
                 }
-                /*
-                $data = exec ("ps -ef | grep php",$mas);
-                //$d= explode("\n",$data);
-                //echo "find - ".$routename."\n";
-                $count=0;
-                $finddata=array();
-                foreach($mas as $key=>$value){
-                    $v=strripos($value,$routename);
-                    //echo " v= ".$v."\n";
-                    if($v!==false){
-                        $finddata[]=$value;
-
-                        $count++;
-                    }
-                }
-                if($count<=2){
-                    logger( "Main proccess die.",'',$config['debug']);
-                    die;
-                }
-                */
             }
-           // $q1=$timecurrent- $starttime;
-           // $q2=sizeof($task)*40;
-           // echo $q1."  ==   ".$q2;
+
             if($timecurrent- $starttime>$maxworktime){
-                //echo "time out";
                 $db->query($finalquery);
                 $log->debug( $finalquery,"line206");
-                $log->info( "time out");
+                $log->info( "Work time is out. Script will die.");
                 die;
             }
-        }
-    }
-
-    function logger1($data,$id="",$view=false){
-        $file=$GLOBALS['config']['logfile'];
-        $td=microtime(true);//date('Y-m-d H:i:s');
-        if($id=="") {
-            $scriptname = "SDP check";
-        }
-        else{
-            $scriptname="";
-        }
-
-        $head="$td $scriptname $id ";
-        $data=$head.$data;
-        $data=str_replace("\n","\n".$head,$data);
-        $data=trim($data)."\n";
-        if($data==""){
-            $data="'' - empty";
-        }
-
-        if ($view) {
-            echo $data;
-        } else {
-            // file_put_contents($file, $data, FILE_APPEND);
-        }
-    }
-    function logger($data,$id="",$view=false){
-        if(is_array($data)){
-            foreach($data as $key=>$value){
-                logger1($key."=>",$id,$view);
-                if(is_array($value)){
-                    logger1("array",$id,$view);
-                    logger($value,$id,$view);
-                }
-                else{
-                    logger1($value,$id,$view);
-                }
-            }
-        }else {
-            logger1($data,$id,$view);
         }
     }
 ?>
