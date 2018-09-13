@@ -381,13 +381,15 @@ class Tester extends Core_controller {
     public function getaudio($data){
         $functionName=$this->filename."function getaudio ";
         $query = "`recordfile` from `processing` where `id`=".$data;
-        $this->db->query($functionName.$query);
+        $this->log->debug($functionName.$query);
         $file = $this->db->select($query,0);
-        $this->db->query($functionName."file name :".$file);
-        if(trim($file) !=""){
+        $this->log->debug($functionName."file name :".$file);
+        if(trim($file) !="" && file_exists($file)){
             $fp=fopen($file, "r");
             header('Content-Type: audio/wav');
-            header('Content-disposition: attachment; filename="'.end(explode("/",str_replace(":", "-", $file))).'"');
+            $recordFileName = pathinfo($file, PATHINFO_FILENAME);
+            $this->log->debug($functionName."Record file name :".$recordFileName);
+            header('Content-disposition: attachment; filename="'.$recordFileName.'"');
             header("Content-transfer-encoding: binary");
             fpassthru($fp);
             fclose($fp);
@@ -399,13 +401,14 @@ class Tester extends Core_controller {
     public function getaudio2($data){
         $functionName=$this->filename."function getaudio2 ";
         $query = "`recordfile2` from `processing` where `id`=".$data;
-        $this->db->query($functionName.$query);
+        $this->log->debug($functionName.$query);
         $file = $this->db->select($query,0);
-        $this->db->query($functionName."file name :".$file);
-        if(trim($file) !="") {
+        $this->log->debug($functionName."file name :".$file);
+        if(trim($file) !="" && file_exists($file)) {
             $fp = fopen($file, "r");
             header('Content-Type: audio/wav');
-            header('Content-disposition: attachment; filename="' . end(explode("/", str_replace(":", "-", $file))) . '"');
+            $recordFileName = pathinfo($file, PATHINFO_FILENAME);
+            header('Content-disposition: attachment; filename="' .$recordFileName . '"');
             header("Content-transfer-encoding: binary");
             fpassthru($fp);
             fclose($fp);
