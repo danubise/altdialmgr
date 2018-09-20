@@ -5,13 +5,16 @@
  * Date: 26.02.15
  * Time: 22:56
  */
+include_once ('log.php');
 class Core_controller {
 
     public $module_name;
     public $access_metod;
+    public $log;
 
     public function __construct() {
         $this->access_metod = array('load_model','load_lib','view','set_config');
+        $this->log = new Log();
     }
 
     function __get($key) {

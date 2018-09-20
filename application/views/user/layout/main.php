@@ -27,11 +27,12 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav">
-                <li><a href="<?=baseurl("numberpool")?>">Группы номеров</a></li>
-                <li><a href="<?=baseurl("tester")?>">Тестер маршрутов</a></li>
+                <li><a href="<?=baseurl("numberpool")?>">Phone groups</a></li>
+                <li><a href="<?=baseurl("tester")?>">Tests</a></li>
+                <li><a href="<?=baseurl("usersettings")?>">Settings</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="<?=baseurl('home/logout')?>"><i class="fa fa-power-off"></i> Выход</a></li>
+                <li><a href="<?=baseurl('home/logout')?>"><i class="fa fa-power-off"></i> Exit</a></li>
             </ul>
 
         </div>
