@@ -23,6 +23,19 @@ class Usersettings extends Core_controller
     }
     public function index(){
         $functionName=$this->filename."function index ";
+        if(isset($_POST['save'])){
+            $deleteSQL="DELETE FROM  `networksettings` WHERE `userid`='".$_SESSION['id']."'";
+            $this->log->debug($functionName.$deleteSQL);
+            $this->db->query($deleteSQL);
+            $networkSettings = array(
+                'ipaddress'=> $_POST['ipaddress'],
+                'port'=>$_POST['port'],
+                'userid'=>$_SESSION['id']
+            );
+            $this->log->debug($networkSettings);
+            $this->db->insert ("networksettings",$networkSettings);
+            $this->log->debug($this->db->query->last);
+        }
 
         $getNetworkSettingsSQL = "* FROM `networksettings` WHERE `userid`='".$_SESSION['id']."'";
         $this->log->debug($functionName.$getNetworkSettingsSQL);
