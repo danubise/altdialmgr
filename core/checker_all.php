@@ -7,11 +7,12 @@ error_reporting(E_ALL & ~(E_STRICT|E_NOTICE));
 $config = array(
     'debug'=>true, //if true log will show to desktop
     'monitor'=>"/var/spool/asterisk/monitor/",
-    'context'=> $_config['context'], //"managerd",
+    'context'=> $_config['context'],
     'recordcontext' => "cwc_playwa",
     'CallerID'=>"74951674500",
     'log_file' => $_config['checker_all_log'],
     'log_write' => "file",
+    'timeOutForSDPstart' => 2
     //'log_level' => "a"
 );
 $configami= array(
@@ -51,7 +52,7 @@ $i=0;
 $numberforami= array();
 foreach($data as $key=>$value){
     $data[$key]['recordfile']=strtolower($routemd5hash)."_".str_replace(array("-",":"," "),"_",date('Y-m-d H:i:s'))."_".$data[$key]['number']."_".$data[$key]['id'];
-    $data[$key]['recordfile2']=str_replace(array("-",":"," "),"_",date('Y-m-d H:i:s'))."_".$data[$key]['number']."_answer"."_".$data[$key]['id'];
+    $data[$key]['recordfile2']=strtolower($routemd5hash)."_".str_replace(array("-",":"," "),"_",date('Y-m-d H:i:s'))."_".$data[$key]['number']."_answer"."_".$data[$key]['id'];
     $data[$key]['recfile']=explode(" ",php_uname());
 
     //$actionid=$value['id'].$value['number'];
@@ -151,19 +152,16 @@ else{
         7 => "Line is off hook",
         8 => "Congestion (circuits busy)",
     );
-    //die;
-    //foreach($data as $key=>$value) {
 
     $log->info("start sdp monitor");
     system("/usr/bin/php -f /var/www/html/dialmanager/core/sdp_check.php ".$routemd5hash." >> /var/log/asterisk/sdp_checker.log & 2>/var/log/asterisk/sdp_checker_err.log");
-    sleep(2);
+    sleep($config['timeOutForSDPstart']);
     $log->info("start sdp monitor done");
 
 
     $process = array();
     $action=0;
-    //print_r($data);
-    //die;
+
     $log->info("Start main proccess");
     $oldtime=microtime();
     $break=0;
@@ -696,19 +694,6 @@ else{
 function logdata($chanel){
     $r=exec("grep \"".$chanel."\" /var/log/asterisk/full",$logdata);
     return $logdata;
-}
-
-function getnumb($db){
-    $result = $db->select("`id`,`number` from `processing` where  `checkstart`=1 and `status`=0");
-
-    return $result;
-}
-
-function channeltonumnber($c){
-
-}
-function process($data){
-
 }
 
 
