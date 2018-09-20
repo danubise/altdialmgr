@@ -55,8 +55,12 @@ class Tester extends Core_controller {
 
             $poolname=$this->db->select("`name` from `dm_poolgroup` where `id`='".$_POST['poolgroup']."'; ",0);
             $q="INSERT INTO `processing` (`routename`,`anumber`, `prefix`, `number`, `numberpoolname`, `md5hash`) ".
-                "SELECT '".$_POST['name']."', '".$_POST['anumber']."', '".$_POST['prefix']."', CONCAT('".$_POST['prefix']."',`number`) as numberWithPrefix,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
-                "where `poolgroup`='".$_POST['poolgroup']."';";
+                "SELECT '".$_POST['name']."', ".$_POST['anumber']." , p.prefix, CONCAT(p.prefix,np.`number`) as numberWithPrefix,
+                    '".$poolname."' , '".$md5hash."' 
+                FROM `dm_numberpool` AS np, `prefix` AS p, `networksettings` AS n , `anumber` AS an 
+                WHERE np.`poolgroup`='".$_POST['poolgroup']."' AND p.userid='".$_SESSION['id']."' 
+                    AND n.userid='".$_SESSION['id']."' AND an.userid='".$_SESSION['id']."';";
+
             $this->db->query($q);
             $this->log->debug($functionName." q ".$q);
             header('Location: '.baseurl('tester/listtable'));
