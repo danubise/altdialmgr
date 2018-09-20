@@ -6,21 +6,21 @@
 </thead>
     <tr>
         <td>Voip host name/ip</td>
-        <td><input name="ipaddress" value="<?=$networkSettings['ipaddress'] ?>"></td>
+        <td><input name="ipaddress" value="<?=$networkSettings['ipaddress'] ?>" maxlength="25"></td>
     </tr>
 
     <tr>
         <td>Sip port</td>
-        <td><input name="port" value="<?=$networkSettings['port'] ?>"></td>
+        <td><input name="port" value="<?=$networkSettings['port'] ?>" maxlength="5"></td>
     </tr>
 
     <tr>
         <td>A number</td>
-        <td><input name="anumber" value="<?=$anumber ?>"></td>
+        <td><input name="anumber" value="<?=$anumber ?>" maxlength="25"></td>
     </tr>
     <tr>
         <td>Prefix</td>
-        <td><input name="prefix" value="<?=$prefix ?>"></td>
+        <td><input name="prefix" value="<?=$prefix ?>" maxlength="25"></td>
     </tr>
 <tr><td></td><td></td></tr>
 

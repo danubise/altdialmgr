@@ -24,6 +24,7 @@ class Usersettings extends Core_controller
     public function index(){
         $functionName=$this->filename."function index ";
         if(isset($_POST['save'])){
+            $this->log->SetGlobalIndex("NetworkSettings");
             $deleteSQL="DELETE FROM  `networksettings` WHERE `userid`='".$_SESSION['id']."'";
             $this->log->debug($functionName.$deleteSQL);
             $this->db->query($deleteSQL);
@@ -34,6 +35,28 @@ class Usersettings extends Core_controller
             );
             $this->log->debug($networkSettings);
             $this->db->insert ("networksettings",$networkSettings);
+            $this->log->debug($this->db->query->last);
+            $this->log->SetGlobalIndex("ANumber");
+            $deleteSQL="DELETE FROM  `anumber` WHERE `userid`='".$_SESSION['id']."'";
+            $this->log->debug($functionName.$deleteSQL);
+            $this->db->query($deleteSQL);
+            $anumberSettings = array(
+                'anumber'=> $_POST['anumber'],
+                'userid'=>$_SESSION['id']
+            );
+            $this->log->debug($anumberSettings);
+            $this->db->insert ("anumber",$anumberSettings);
+            $this->log->debug($this->db->query->last);
+            $this->log->SetGlobalIndex("Prefix");
+            $deleteSQL="DELETE FROM  `prefix` WHERE `userid`='".$_SESSION['id']."'";
+            $this->log->debug($functionName.$deleteSQL);
+            $this->db->query($deleteSQL);
+            $anumberSettings = array(
+                'prefix'=> $_POST['prefix'],
+                'userid'=>$_SESSION['id']
+            );
+            $this->log->debug($anumberSettings);
+            $this->db->insert ("prefix",$anumberSettings);
             $this->log->debug($this->db->query->last);
         }
 
