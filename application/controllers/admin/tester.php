@@ -80,7 +80,7 @@ class Tester extends Core_controller {
      */
     public function activate($id) {
         $id=urldecode( $id);
-        $commnad="/usr/bin/php -f /var/www/html/dialmanager/core/checker.php ".$id." >> /var/log/checker.log & 2>/dev/null";
+       // $commnad="/usr/bin/php -f /var/www/html/dialmanager/core/checker.php ".$id." >> /var/log/checker.log & 2>/dev/null";
         //echo "cmd ".$commnad."\n";
         //die;
        // $run = system("/usr/bin/php -f /var/www/html/dialmanager/core/sdp_check.php ".$id." >> /var/log/checker.log & 2>/dev/null");

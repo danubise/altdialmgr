@@ -55,7 +55,7 @@ class Tester extends Core_controller {
 
             $poolname=$this->db->select("`name` from `dm_poolgroup` where `id`='".$_POST['poolgroup']."'; ",0);
             $q="INSERT INTO `processing` (`routename`, `prefix`, `number`, `numberpoolname`, `md5hash`) ".
-                "SELECT '".$_POST['name']."', '".$_POST['prefix']."', `number`,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
+                "SELECT '".$_POST['name']."', '".$_POST['prefix']."', CONCAT('".$_POST['prefix']."',`number`) as numberWithPrefix,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
                 "where `poolgroup`='".$_POST['poolgroup']."';";
             $this->db->query($q);
             $this->log->debug($functionName." q ".$q);
