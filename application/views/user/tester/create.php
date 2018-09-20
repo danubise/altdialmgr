@@ -9,16 +9,17 @@
 <form method="post">
 <table class="table table-bordered table-striped">
 <thead>
-    <tr><th colspan=2>Новый тест</th></tr>
+    <tr><th colspan=2>New test</th></tr>
 </thead>
 <tr>
-<td>Название</td><td><input name="name"></td></tr>
+<td>Name</td><td><input name="name" ></td></tr>
 
-<tr><td>Группа номеров</td><td><?=$poolgroup?></td></tr>
+<tr><td>Phone nnumbers</td><td><?=$poolgroup?></td></tr>
+<tr><td>Prefix</td><td><input type="text" name="prefix"></td></tr>
 <tr><td></td><td></td></tr>
 
-<tr><td></td><td> <button>Сохранить</button></td></tr>
-<input type="hidden" name='add' value='1'>
+<tr><td></td><td> <button>Create</button></td></tr>
+<input type="hidden" name='create' value='1'>
 
 </table>
 </form>

@@ -46,7 +46,7 @@ class Tester extends Core_controller {
     }
     public function create() {
         $functionName=$this->filename."function activate ";
-        if(isset($_POST['add'])) {
+        if(isset($_POST['create'])) {
             $md5hash = md5($_POST['name'].$_POST['poolgroup'].$_SESSION['id']);
             $createNewTestQuery = "INSERT INTO `test_status` (`md5hash`, `status`, `userid`, `name`) ".
                                 "VALUES ( '".$md5hash."', 'stop', ".$_SESSION['id'].",'".$_POST['name']."' )";
@@ -54,8 +54,8 @@ class Tester extends Core_controller {
             $this->db->query($createNewTestQuery);
 
             $poolname=$this->db->select("`name` from `dm_poolgroup` where `id`='".$_POST['poolgroup']."'; ",0);
-            $q="INSERT INTO `processing` (`routename`, `number`, `numberpoolname`, `md5hash`) ".
-                "SELECT '".$_POST['name']."', `number`,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
+            $q="INSERT INTO `processing` (`routename`, `prefix`, `number`, `numberpoolname`, `md5hash`) ".
+                "SELECT '".$_POST['name']."', '".$_POST['prefix']."', `number`,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
                 "where `poolgroup`='".$_POST['poolgroup']."';";
             $this->db->query($q);
             $this->log->debug($functionName." q ".$q);
