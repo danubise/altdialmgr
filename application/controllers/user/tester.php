@@ -54,8 +54,8 @@ class Tester extends Core_controller {
             $this->db->query($createNewTestQuery);
 
             $poolname=$this->db->select("`name` from `dm_poolgroup` where `id`='".$_POST['poolgroup']."'; ",0);
-            $q="INSERT INTO `processing` (`routename`, `prefix`, `number`, `numberpoolname`, `md5hash`) ".
-                "SELECT '".$_POST['name']."', '".$_POST['prefix']."', CONCAT('".$_POST['prefix']."',`number`) as numberWithPrefix,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
+            $q="INSERT INTO `processing` (`routename`,`anumber`, `prefix`, `number`, `numberpoolname`, `md5hash`) ".
+                "SELECT '".$_POST['name']."', '".$_POST['anumber']."', '".$_POST['prefix']."', CONCAT('".$_POST['prefix']."',`number`) as numberWithPrefix,'".$poolname."' , '".$md5hash."' FROM `dm_numberpool` ".
                 "where `poolgroup`='".$_POST['poolgroup']."';";
             $this->db->query($q);
             $this->log->debug($functionName." q ".$q);
@@ -64,11 +64,19 @@ class Tester extends Core_controller {
         }
         $pgl=$this->numberpool_model->GetListGroup();
         $poolgrouplist=$this->list_model->GetList($pgl,"poolgroup",0);
+        $getAnumber = "`anumber` FROM `anumber` WHERE `userid`='".$_SESSION['id']."'";
+        $this->log->debug($functionName.$getAnumber);
+        $anumber = $this->db->select($getAnumber, 0 );
+        $this->log->debug($functionName."A number is :".$anumber);
+
 
         $this->view(
             array(
                 'view' => 'tester/create',
-                'var' => array( 'poolgroup'=>$poolgrouplist)
+                'var' => array(
+                    'poolgroup'=>$poolgrouplist,
+                    'anumber' => $anumber
+                )
             )
         );
     }

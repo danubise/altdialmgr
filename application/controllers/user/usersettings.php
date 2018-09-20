@@ -58,6 +58,7 @@ class Usersettings extends Core_controller
             $this->log->debug($anumberSettings);
             $this->db->insert ("prefix",$anumberSettings);
             $this->log->debug($this->db->query->last);
+            $this->log->SetGlobalIndex("");
         }
 
         $getNetworkSettingsSQL = "* FROM `networksettings` WHERE `userid`='".$_SESSION['id']."'";

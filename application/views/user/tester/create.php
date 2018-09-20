@@ -15,7 +15,7 @@
 <td>Name</td><td><input name="name" ></td></tr>
 
 <tr><td>Phone nnumbers</td><td><?=$poolgroup?></td></tr>
-<tr><td>Prefix</td><td><input type="text" name="prefix"></td></tr>
+<tr><td>A number</td><td><input type="text" name="anumber" value="<?=$anumber?>" maxlength="25"></td></tr>
 <tr><td></td><td></td></tr>
 
 <tr><td></td><td> <button>Create</button></td></tr>
