@@ -1,10 +1,10 @@
-<a href="<?=baseurl('newcamp/index/')?>" class="btn btn-success">Создать тест</a>
+<a href="<?=baseurl('newcamp/index/')?>" class="btn btn-success">New test</a>
 
 
 
 <form method="post">
     <table class="table table-bordered table-striped">
-        <tr><td>Тест</td><td>Состояние</td><td>Операции</td></tr>
+        <tr><td>Name</td><td>State</td><td>Actions</td></tr>
         <?php
         if(is_array($campany)) {
             foreach ($campany as $key => $value):

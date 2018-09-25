@@ -4,12 +4,12 @@
 
 ?>
 <table class="table table-striped" id="tableNum">
-    <tr><h4>Название "<?=$routename?> <?=$numberpoolname?>"&nbsp;</h4></tr>
+    <tr><h4>Report name: "<?=$routename?> <?=$numberpoolname?>"&nbsp;</h4></tr>
     <thead>
 
     <tr>
-        <th>Время</th>
-        <th>Номер назначения</th>
+        <th>DateTime</th>
+        <th>Dest</th>
         <th>PDD</th>
         <th>RBT</th>
         <th>ANS</th>

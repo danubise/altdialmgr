@@ -1,7 +1,7 @@
 <form method="post"  enctype="multipart/form-data" action="<?=baseurl('numberpool/index/addnumbertopool/'.$idpool)?>">
     <table class="table  table-striped" style="width: 500px">
         <tr>
-            <th>Добавление номеров в:&nbsp;</th>
+            <th>Adding phone numbers to:&nbsp;</th>
             <td><?=$poolname?><input type="hidden" name="idpool" class="form-control" value="<?=$idpool?>"></td>
         </tr>
         <tr>
@@ -15,7 +15,7 @@
         </tr>!-->
         <tr>
             <th>&nbsp;</th>
-            <td><button class="btn btn-primary">Добавить</button></td>
+            <td><button class="btn btn-primary">Add</button></td>
         </tr>
      </table>
 </form>

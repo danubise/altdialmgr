@@ -1,12 +1,12 @@
 <form method="post"  enctype="multipart/form-data" action="<?=baseurl('numberpool/index/save')?>">
     <table class="table  table-striped" style="width: 500px">
         <tr>
-            <th>Название:&nbsp;</th>
+            <th>Name:&nbsp;</th>
             <td><input name="name" class="form-control"></td>
         </tr>
         <tr>
         <td colspan=2>
-        <b>Номера:</b><br>
+        <b>Phones:</b><br>
         <textarea style='height: 320px;' name='numbers' class='form-control'></textarea>
         </td>
         </tr>
@@ -16,7 +16,7 @@
         </tr>!-->
         <tr>
             <th>&nbsp;</th>
-            <td><button class="btn btn-primary">Добавить</button></td>
+            <td><button class="btn btn-primary">Add</button></td>
         </tr>
      </table>
 </form>

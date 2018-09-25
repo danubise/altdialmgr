@@ -6,7 +6,7 @@
  * Time: 11:21
  */
 ?>
-<a href="<?=baseurl('tester/create/')?>" class="btn btn-success">Создать тест</a>
+<a href="<?=baseurl('tester/create/')?>" class="btn btn-success">New test</a>
 
 
 <form method="post">
@@ -17,14 +17,13 @@
             foreach ($userTests as $key => $value):
                 ?>
                 <tr>
-                    <td><?= $value['name'] ?></td>
+                    <td><a href="<?= baseurl('tester/report/' .$value['md5hash']) ?>" ><?= $value['name'] ?></a></td>
                     <td><?= $value['status'] ?> завершено <?= $value['stop'] ?> из <?= $value['total'] ?></td>
                     <td>
-                        <a href="<?= baseurl('tester/activate/' . $value['md5hash']) ?>">Start</a>/
-                        <a href="<?= baseurl('tester/deactivate/' . $value['md5hash']) ?>">Stop</a>/
-                        <a href="<?= baseurl('tester/delete/' .$value['md5hash']) ?>">Del</a>/
-                        <a href="<?= baseurl('tester/reset/' . $value['md5hash']) ?>">Reset</a>/
-                        <a href="<?= baseurl('tester/report/' .$value['md5hash']) ?>">Report</a>
+                        <a href="<?= baseurl('tester/activate/' . $value['md5hash']) ?>" class="btn btn-success">Start</a>
+                        <a href="<?= baseurl('tester/deactivate/' . $value['md5hash']) ?>" class="btn btn-success">Stop</a>
+                        <a href="<?= baseurl('tester/delete/' .$value['md5hash']) ?>" class="btn btn-danger">Del</a>
+                        <a href="<?= baseurl('tester/reset/' . $value['md5hash']) ?>" class="btn btn-danger">Reset</a>
                     </td>
                 </tr>
             <?php endforeach;
