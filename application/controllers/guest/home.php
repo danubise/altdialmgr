@@ -6,6 +6,7 @@
  * Time: 13:00
  */
 class Home extends Core_controller {
+    private $filename = "home.php ";
     public function __construct() {
         parent::__construct();
     }
@@ -197,11 +198,50 @@ class Home extends Core_controller {
             'var' => array('reports'=>$report,
                 'routename'=>$testStatus['name'],
                 'numberpoolname'=>$data[0]['numberpoolname']),
-            'view' => 'guest/report',
+            'view' => 'report',
             'css' => array(baseurl('pub/css/jquery.dataTables.min.css')),
             'js' => array(baseurl('pub/js/jquery.dataTables.min.js'),baseurl('pub/js/page.report.showreport.js'))
         );
         $this->view($view);
-        die;
+
+    }
+    public function getaudio($data){
+        $functionName=$this->filename."function getaudio ";
+        $query = "`recordfile` from `processing` where `id`=".$data;
+        $this->log->debug($functionName.$query);
+        $file = $this->db->select($query,0);
+        $this->log->debug($functionName."file name :".$file);
+        if(trim($file) !="" && file_exists($file)){
+            $fp=fopen($file, "r");
+            header('Content-Type: audio/wav');
+            $recordFileName = pathinfo($file, PATHINFO_FILENAME);
+            $this->log->debug($functionName."Record file name :".$recordFileName);
+            header('Content-disposition: attachment; filename="'.$recordFileName.'"');
+            header("Content-transfer-encoding: binary");
+            fpassthru($fp);
+            fclose($fp);
+        }else{
+            $this->log->error($functionName."File name is empty ".$data);
+        }
+
+    }
+    public function getaudio2($data){
+        $functionName=$this->filename."function getaudio2 ";
+        $query = "`recordfile2` from `processing` where `id`=".$data;
+        $this->log->debug($functionName.$query);
+        $file = $this->db->select($query,0);
+        $this->log->debug($functionName."file name :".$file);
+        if(trim($file) !="" && file_exists($file)) {
+            $fp = fopen($file, "r");
+            header('Content-Type: audio/wav');
+            $recordFileName = pathinfo($file, PATHINFO_FILENAME);
+            header('Content-disposition: attachment; filename="' .$recordFileName . '"');
+            header("Content-transfer-encoding: binary");
+            fpassthru($fp);
+            fclose($fp);
+        }else{
+            $this->log->error($functionName."File name is empty ".$data);
+        }
+
     }
 }

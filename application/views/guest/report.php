@@ -68,16 +68,16 @@
                 <?php if(($report['callstatus']!="1/Unallocated (unassigned) num" && $report['callstatus']!="38/Network out of order" && $report['callstatus']!="0/Unknown" && $report['callstatus']!="34/Circuit/channel congestion" && $report['callstatus']!="21/Call Rejected") || ($report['callstatus']=="34/Circuit/channel congestion" && $report['RBT'] >0 ) || ($report['callstatus']=="0/Unknown" && $report['RBT'] >0 ))
                 :?>
                 <audio controls>
-                    <source src="<?=baseurl('tester/getaudio/'.$report['id'])?>" type="audio/wav">
-                    <a href="<?=baseurl('tester/getaudio/'.$report['id'])?>" class="btn btn-success">Скачать</a>
+                    <source src="<?=baseurl('home/getaudio/'.$report['id'])?>" type="audio/wav">
+                    <a href="<?=baseurl('home/getaudio/'.$report['id'])?>" class="btn btn-success">Скачать</a>
                 </audio>
                 <?php endif;?>
 
                     <?php if($report['callstatus']=="16/Normal Clearing")
                     :?>
                     <audio controls>
-                        <source src="<?=baseurl('tester/getaudio2/'.$report['id'])?>" type="audio/wav">
-                        <a href="<?=baseurl('tester/getaudio2/'.$report['id'])?>" class="btn btn-success">Скачать</a>
+                        <source src="<?=baseurl('home/getaudio2/'.$report['id'])?>" type="audio/wav">
+                        <a href="<?=baseurl('home/getaudio2/'.$report['id'])?>" class="btn btn-success">Скачать</a>
                     </audio>
                     <?php endif;?>
                 </td>

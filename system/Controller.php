@@ -32,6 +32,7 @@ class Core_controller {
     }
 
     public function view($param) {
+
         if(isset($param['var'])) {
             foreach($param['var'] as $key=>$var) {
                 if(!isset($$key)) $$key = $var;
@@ -42,8 +43,15 @@ class Core_controller {
             include (layout.$param['page'].EXT);
             return true;
         }
+        if(!empty($param['view']) ){
+            $CONTENT = views . $param['view'] . EXT;
+            if( file_exists($CONTENT)) {
 
-        $CONTENT = views.$param['view'].EXT;
+                include($CONTENT);
+                return true;
+            }
+        }
+
         include(views.'layout/main'.EXT);
 
     }
