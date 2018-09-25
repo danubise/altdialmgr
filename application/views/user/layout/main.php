@@ -42,7 +42,11 @@
 
 <div class="container">
     <div class="well" style="margin-top: 20px;">
-        <? include($CONTENT)?>
+        <?
+        if($CONTENT !="/var/www/html/dialmanager/application/views/user/layout/main.php") {
+            include($CONTENT);
+        }
+        ?>
     </div>
 </div>
 <center></center>

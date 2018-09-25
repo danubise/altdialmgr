@@ -12,11 +12,11 @@ class Home extends Core_controller {
     }
 
     public function index() {
-       $this->view(
-	array(
-	    'view' => 'test'
-	)
-       );
+        $this->view(
+            array(
+                'view' => 'layout/main'
+            )
+        );
     }
 
     public function logout() {

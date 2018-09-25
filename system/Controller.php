@@ -39,13 +39,17 @@ class Core_controller {
             }
         }
 
-        if(!empty($param['page']) && file_exists(layout.$param['page'].EXT)) {
-            include (layout.$param['page'].EXT);
-            return true;
+        if(!empty($param['page'])) {
+            $CONTENTPAGE = layout . $param['page'] . EXT;
+            echo $CONTENTPAGE;
+            if (file_exists($CONTENTPAGE)) {
+                include($CONTENTPAGE);
+                return true;
+            }
         }
         if(!empty($param['view']) ){
             $CONTENT = views . $param['view'] . EXT;
-            if( file_exists($CONTENT)) {
+            if( $param['view'] == "share/report" && file_exists($CONTENT)) {
 
                 include($CONTENT);
                 return true;

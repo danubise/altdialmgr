@@ -14,7 +14,7 @@ class Home extends Core_controller {
     public function index() {
         $this->view(
             array(
-                'module' => 'Авторизация'
+                'view' => 'layout/main'
             )
         );
     }
@@ -198,7 +198,7 @@ class Home extends Core_controller {
             'var' => array('reports'=>$report,
                 'routename'=>$testStatus['name'],
                 'numberpoolname'=>$data[0]['numberpoolname']),
-            'view' => 'report',
+            'view' => 'share/report',
             'css' => array(baseurl('pub/css/jquery.dataTables.min.css')),
             'js' => array(baseurl('pub/js/jquery.dataTables.min.js'),baseurl('pub/js/page.report.showreport.js'))
         );
