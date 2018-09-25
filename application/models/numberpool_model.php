@@ -23,6 +23,7 @@ class Pool{
 
 }
 class Numberpool_model extends Core_model {
+    private $filename="numberpoll_model.php ";
     public function __construct() {
         parent::__construct();
         $this->CompanyTableField=array('id','name','status','datecreate','queueid','operatormin','CallCountProcedure1',
@@ -33,14 +34,19 @@ class Numberpool_model extends Core_model {
             'CallerId'
         );
         $this->WorkTimeTableField=array('id','compid','weekday','timefrom','timeto','lunchfrom','lunchto','timestart','timeend');
+        $config = array(
+            'log_file' => "/var/log/httpd/webaction.log",
+            'log_write' => "file",
+
+        );
+        $this->log->setConfig($config);
     }
     public function Create($data){
-        $id=$this->db->insert('dm_poolgroup',array("name"=>$data['name']));
+        $id=$this->db->insert('dm_poolgroup',array("name"=>$data['name'],"userid"=>$_SESSION['id']));
         $tdata=array(
             "poolgroup"=>$id,
             "number"=>$data['numberlist']
         );
-        //$tdata+=;
 
         $this->db->multi_insert("dm_numberpool",$tdata);
     }
@@ -83,11 +89,17 @@ class Numberpool_model extends Core_model {
         return $pool;
     }
     public function Delete($id){
-        $this->db->query("DELETE FROM `dm_poolgroup` WHERE `id`='".$id."'");
-        $this->db->query("DELETE FROM `dm_numberpool` WHERE `poolgroup`='".$id."'");
+        $check = $this->db->select ("`id` FROM `dm_poolgroup` WHERE `id`='".$id."' AND userid='".$_SESSION['id']."'",false);
+        $this->log->debug($this->filename." Delete ".$this->db->query->last. " result is ".$check);
+        if($check == $id) {
+            $this->db->query("DELETE FROM `dm_poolgroup` WHERE `id`='" . $id . "' AND userid='" . $_SESSION['id'] . "'");
+            $this->db->query("DELETE FROM `dm_numberpool` WHERE `poolgroup`='" . $id . "'");
+        }
     }
     public function GetAllPools(){
-        $pools= $this->db->select("* from `dm_poolgroup` ORDER BY `name`");
+        $functionname = $this->filename."GetAllPools";
+        $pools= $this->db->select("* from `dm_poolgroup` WHERE userid='".$_SESSION['id']."' ORDER BY `name`");
+        $this->log->debug($functionname. $this->db->query->last);
         $all=array();
         if(is_array($pools)) {
             foreach ($pools as $key => $value) {
@@ -103,7 +115,7 @@ class Numberpool_model extends Core_model {
         return $all;
     }
     function GetListGroup(){
-        $getpool="* from `dm_poolgroup` ORDER BY `name`";
+        $getpool="* from `dm_poolgroup` WHERE userid='".$_SESSION['id']."' ORDER BY `name`";
         $pool=$this->db->select($getpool);
         $tpool=array();
         foreach ($pool as $key=>$value) {

@@ -8,6 +8,7 @@
 
 class Numberpool extends Core_controller {
     public $dbasterisk='';
+    private $filename="numberpool.php ";
     public function __construct() {
         parent::__construct();
         $this->module_name = 'Группы номеров';
@@ -15,6 +16,12 @@ class Numberpool extends Core_controller {
         //$this->load_model('trunk_model');
         $this->load_model('list_model');
         $this->load_model('numberpool_model');
+        $config = array(
+            'log_file' => "/var/log/httpd/webaction.log",
+            'log_write' => "file",
+
+        );
+        $this->log->setConfig($config);
     }
 
     public function savenewname(){
