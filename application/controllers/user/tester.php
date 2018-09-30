@@ -93,7 +93,7 @@ class Tester extends Core_controller {
         $md5hash=urldecode( $md5hash);
         $checkTestStatus = $this->db->select("`status` from `test_status` where `md5hash`='".$md5hash."'", false);
         $this->log->debug($functionName.$this->db->query->last);
-        if($checkTestStatus == "stop") {
+        if($checkTestStatus == "stop" && $this->checkBilling()) {
             $this->db->update("test_status",'status,in progress',"`md5hash`='".$md5hash."'");
             $this->log->debug($functionName.$this->db->query->last);
             $this->log->info($functionName."Start checker script for ".$md5hash." test");
@@ -104,6 +104,31 @@ class Tester extends Core_controller {
         }
         header('Location: '.baseurl('tester/listtable'));
         die;
+    }
+    private function checkBilling(){
+        $functionName=$this->filename."function checkBilling ";
+        global $_config;
+        $ch = curl_init();
+        $accountid = $this->db->select("`account` FROM `users` WHERE `id`='".$_SESSION['id']."'", false);
+        echo $this->db->query->last;
+        printarray($accountid);
+        curl_setopt($ch, CURLOPT_URL,$_config['billing']['URL'].$accountid);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, $_config['billing']['login'].":".$_config['billing']['password']);
+        $xmlData = curl_exec($ch);
+        $this->log->debug($functionName);
+        $this->log->debug(curl_getinfo($ch));
+        printarray(curl_getinfo($ch));
+        curl_close($ch);
+        printarray($xmlData);
+        $data = simplexml_load_string($xmlData);
+        $billValue = $data->account_balance[0]->__toString();
+        if(floatval($billValue) > 0) {
+            return true;
+        }else{
+            return false;
+        }
     }
     /**
      * @param $id
