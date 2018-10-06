@@ -1,15 +1,4 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 22.02.15
- * Time: 16:22
- *
- * Роутинг по скриптам проекта
- * Правило получение пути domain.ru/Контролер/Вьюха
- * Так же возможно создание алисов domain.ru/Приветствие == domain.ru/{Контролер: User}/{Вьюха: Welcome}
- * Конфигурация алиасов: application/data/config_route.php
- */
 
 if(!empty($_SERVER['argv'][1]) and !empty($_SERVER['argv'][2])) {
     $DEBUG = TRUE; //Включаем режим дебага

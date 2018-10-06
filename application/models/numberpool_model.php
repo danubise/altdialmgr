@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 26.02.15
- * Time: 22:14
- */
 class Pool{
     public $Id;
     public $Name;

@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 01.03.15
- * Time: 12:34
- */
-
 class minute_cron extends Core_controller {
     public function __construct() {
         parent::__construct();

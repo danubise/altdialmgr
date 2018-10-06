@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 26.02.15
- * Time: 22:14
- */
-
 class User_model extends Core_model {
 
     public $id = 0;

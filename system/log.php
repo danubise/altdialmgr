@@ -1,13 +1,4 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: slava
-     * Date: 09.10.15
-     * Time: 13:56
-     * Phone: 89878130785
-     * Email: danubise@gmail.com
-     * Skype: danubise
-     */
     /*
      * config
      *  log_write   file/null (file) запись в файл или выводи на монитор

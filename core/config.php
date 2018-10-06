@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: slava
- * Date: 21.05.15
- * Time: 10:33
- */
 $config = array(
     'host'=>"localhost",
     'user'=>"test",

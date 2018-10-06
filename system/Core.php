@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vladlexx
- * Date: 19.02.15
- * Time: 21:40
- */
 
     define('CORE_VERSION', 3);
 

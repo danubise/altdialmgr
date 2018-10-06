@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 26.02.15
- * Time: 22:24
- */
 
 connect_file(db_lib);
 connect_file(BASEPATH.'Functions.php');

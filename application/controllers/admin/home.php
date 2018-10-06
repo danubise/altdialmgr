@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 28.02.15
- * Time: 22:39
- */
+
 class Home extends Core_controller {
     public function __construct() {
         parent::__construct();

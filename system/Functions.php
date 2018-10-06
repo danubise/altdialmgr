@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 19.02.15
- * Time: 22:14
- */
 
 function printarray($out) {
     echo "printarrayFunction <br>";
@@ -110,15 +104,4 @@ function utf8_to_cp1251($s)
     {
         return $s;
     }
-}
-function logger($data,$id=""){
-    $file="/var/log/asterisk/agi.log";
-    $td=date('Y-m-d H:i:s');
-    $scriptname="class_dm.php";
-
-    $head="$td $scriptname $id ";
-    $data=$head.$data;
-    $data=str_replace("\n","\n".$head,$data);
-    $data=trim($data)."\n";
-    file_put_contents($file, $data, FILE_APPEND );
 }

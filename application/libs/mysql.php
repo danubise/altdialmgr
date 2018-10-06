@@ -1,11 +1,5 @@
 <?php
 /**
- * Created by Unix develop team.
- * User: vladlexx
- * Date: 19.02.15
- * Time: 18:40
- * Version: 3.0
- * Update: 20.03.2015 15:00
  *
  *
  * Библиотека для упрощённой работы с базой данных MySQL используя драйвер mysqli

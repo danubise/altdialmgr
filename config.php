@@ -1,13 +1,6 @@
 <?php
 
 
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 19.02.15
- * Time: 21:39
- */
-
 ///////////////////////////////////////////////////////////////
 /**
  * SYSTEM CONFIG START
@@ -22,7 +15,7 @@ $application_folder = 'application';
 
 $pub_folder = 'pub';
 
-$core_dir = 'dialmanager';
+$core_dir = 'eventmonitor';
 
 error_reporting(E_ALL & ~E_NOTICE);
 ini_set('display_errors', 1);

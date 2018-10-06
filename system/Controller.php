@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 26.02.15
- * Time: 22:56
- */
+
 include_once ('log.php');
 class Core_controller {
 

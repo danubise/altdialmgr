@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 26.03.15
- * Time: 12:08
- */
 
 class Settings extends Core_controller {
     public $dbasterisk='';

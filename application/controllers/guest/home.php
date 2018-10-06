@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by Unix develop team.
- * User: vlad
- * Date: 27.02.15
- * Time: 13:00
- */
+
 class Home extends Core_controller {
     private $filename = "home.php ";
     public function __construct() {
