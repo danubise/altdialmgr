@@ -9,6 +9,12 @@ class Home extends Core_controller {
     private $filename = "home.php ";
     public function __construct() {
         parent::__construct();
+        $config = array(
+            'log_file' => "/var/log/httpd/webaction.log",
+            'log_write' => "file",
+
+        );
+        $this->log->setConfig($config);
     }
 
     public function index() {

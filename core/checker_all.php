@@ -687,7 +687,8 @@ else{
             $log->error("Channel id empty","final");
         }
     }
-   // echo "end";
+    $db->update("test_status",array("status" => "stop"), "`md5hash`='".$routemd5hash."'");
+    $log->debug($db->query->last);
     $log->info("End of work","logdata");
     $log->info("");
     die;

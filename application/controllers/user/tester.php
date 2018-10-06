@@ -29,10 +29,10 @@ class Tester extends Core_controller {
     }
     public function listtable() {
         $userTests = $this->db->select("st.name, st.status,st.md5hash, SUM(IF(`pr`.`checkstart`=1, 1, 0)) as `start`, 
-            SUM(IF(`pr`.`checkstart`=0, 1, 0)) as `stop`, COUNT(*) as total 
+            SUM(IF(`pr`.`checkstart`=0, 1, 0)) as `stop`, COUNT(*) as total , `pr`.`anumber`
             FROM `test_status` as st, `processing` as pr 
             WHERE st.md5hash=pr.md5hash AND st.userid='".$_SESSION['id']."'
-            GROUP BY st.name DESC ");
+            GROUP BY st.id DESC ");
 
         $view = array(
             'view' => 'tester/listtable',
