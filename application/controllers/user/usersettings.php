@@ -31,6 +31,7 @@ class Usersettings extends Core_controller
             $networkSettings = array(
                 'ipaddress'=> $_POST['ipaddress'],
                 'port'=>$_POST['port'],
+                'codec'=>$_POST['codec'],
                 'userid'=>$_SESSION['id']
             );
             $this->log->debug($networkSettings);
@@ -58,6 +59,8 @@ class Usersettings extends Core_controller
             $this->log->debug($anumberSettings);
             $this->db->insert ("prefix",$anumberSettings);
             $this->log->debug($this->db->query->last);
+            $this->db->update("commonsetting" , array("propertyvalue" =>1), "  `propertyname` = 'iptables_update'");
+            $this->log->debug($this->db->query->last);
             $this->log->SetGlobalIndex("");
         }
 
@@ -83,6 +86,7 @@ class Usersettings extends Core_controller
                 'networkSettings'=>$networkSettings,
                 'anumber'=>$anumber,
                 'prefix'=>$prefix
+
             )
         );
         $this->view($view);

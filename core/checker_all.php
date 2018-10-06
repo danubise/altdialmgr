@@ -37,7 +37,7 @@ $errstr="";
 $log->debug($config);
 $log->debug($_config);
 $log->info("Checker start for route ".$routemd5hash." and CID=".$CallerID);
-$query="`id`,`number`,`anumber`,`host` from `processing` where `checkstart` = 0 and `md5hash` = '".$routemd5hash."' AND `number` <>''";
+$query="`id`,`number`,`anumber`,`host`,`codec` from `processing` where `checkstart` = 0 and `md5hash` = '".$routemd5hash."' AND `number` <>''";
 $log->debug($query);
 
 $data=$db->select($query, 1);
@@ -74,7 +74,8 @@ foreach($data as $key=>$value){
             "__recordfile" => $data[$key]['recordfile'],
             "__recordfile2" => $data[$key]['recordfile2'],
             "host" => $data[$key]['host'],
-            "anumber" => $data[$key]['anumber']
+            "anumber" => $data[$key]['anumber'],
+            "codec" => $data[$key]['codec']
         )
 
     );

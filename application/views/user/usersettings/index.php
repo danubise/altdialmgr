@@ -22,6 +22,15 @@
         <td>Prefix</td>
         <td><input name="prefix" value="<?=$prefix ?>" maxlength="25"></td>
     </tr>
+    <tr>
+        <td>Codec</td>
+        <td>
+            <select name="codec">
+                <option <? if( $networkSettings['codec'] == "alaw") echo "selected"?> value="alaw">g711</option>
+                <option <? if( $networkSettings['codec'] == "g729") echo "selected"?> value="g729">g729</option>
+            </select>
+        </td>
+    </tr>
 <tr><td></td><td></td></tr>
 
 <tr><td></td><td> <button>Save</button></td></tr>
