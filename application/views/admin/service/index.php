@@ -1,0 +1,116 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: slava
+ * Date: 07.10.18
+ * Time: 4:05
+ */
+//printarray($queueList);
+
+?>
+<table >
+    <tr>
+        <td>
+            <form method="post"  enctype="multipart/form-data" action="<?=baseurl('service/setparam')?>">
+
+            <table>
+                <tr>
+                    <th>Available Queues</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>Active Queues</th>
+                </tr>
+                <tr>
+                    <td>
+                        <p><select size="10" multiple name="queuesAvailable[]" style="width: 150px">
+                                <?php
+                                foreach ($queueList as $key=>$queueExten){
+                                    echo "<option value=\"".$queueExten."\">$queueExten</option>";
+                                }
+                                ?>
+                            </select></p>
+                    </td>
+                    <td style="width: 20px">
+                        &nbsp
+                    </td>
+                    <td>
+                        <button name="action" value="add" class="btn btn-primary">===></button>
+                        <br>
+                        <button name="action" value="del" class="btn btn-primary"><===</button>
+                    </td>
+                    <td style="width: 20px">
+                        &nbsp
+                    </td>
+                    <td>
+                        <p><select size="10" multiple name="queuesActive[]"  style="width: 150px">
+                                <?php
+                                foreach ($queueListActive    as $key=>$queueExten){
+                                    echo "<option value=\"".$queueExten."\">$queueExten</option>";
+                                }
+                                ?>
+                            </select></p>
+                    </td>
+                </tr>
+            </table>
+            </form>
+
+        </td>
+        <td style="width: 20px">
+            &nbsp
+        </td>
+        <td style="text-align: left; vertical-align: top;padding: 0">
+            <table>
+                <tr>
+                    <th>
+                        Current configuration
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Queues:</p>
+                        <ul>
+                            <?php
+                            if(isset($queueListCurrent) && is_array($queueListCurrent)) {
+                                foreach ($queueListCurrent as $key => $queueExten) {
+                                    echo "<li>" . $queueExten . "</li>";
+                                }
+                            }
+                            ?>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table>
+                <tr>
+                    <td>
+                        <a href="<?=baseurl('service/submit')?>" class="btn btn-primary">Submit</a>
+                    </td>
+                    <td style="width: 20px">
+                        &nbsp
+                    </td>
+                    <td>
+                        <a href="<?=baseurl('service/activate')?>" class="btn btn-success">Activate</a>
+                    </td>
+                    <td style="width: 20px">
+                        &nbsp
+                    </td>
+                    <td>
+                        Restart "eventm" service <?php
+                        if($restartStatus == "0") {
+                            echo "done";
+                        }else{
+                            echo "in progress";
+                        }
+                        ?>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+

@@ -19,7 +19,6 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a href="<?=baseurl()?>" class="navbar-brand">Панель администратора</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -28,13 +27,11 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-main">
             <ul class="nav navbar-nav">
-                <li><a href="<?=baseurl("clients")?>">Clients</a></li>
-                <li><a href="<?=baseurl("numberpool")?>">Группы номеров</a></li>
-                <li><a href="<?=baseurl("tester")?>">Тестер маршрутов</a></li>
+                <li><a href="<?=baseurl("service")?>">Service</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="<?=baseurl("settings")?>"><i class="fa fa-cogs"></i> Настройки</a></li>
-                <li><a href="<?=baseurl('home/logout')?>"><i class="fa fa-power-off"></i> Выход</a></li>
+                <li><a href="<?=baseurl("settings")?>"><i class="fa fa-cogs"></i> Settings</a></li>
+                <li><a href="<?=baseurl('home/logout')?>"><i class="fa fa-power-off"></i> Exit</a></li>
             </ul>
 
         </div>

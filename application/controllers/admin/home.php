@@ -3,15 +3,11 @@
 class Home extends Core_controller {
     public function __construct() {
         parent::__construct();
-        $this->module_name = 'Главная страница';
+        $this->module_name = 'Main page';
     }
 
     public function index() {
-       $this->view(
-	array(
-	    'view' => 'test'
-	)
-       );
+        header('Location: '.baseurl("service"));
     }
 
     public function logout() {

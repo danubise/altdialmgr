@@ -4,22 +4,16 @@ class Settings extends Core_controller {
     public $dbasterisk='';
     public function __construct() {
         parent::__construct();
-        $this->module_name = 'Настройки';
+        $this->module_name = 'Settings';
         $this->load_model('campany_model');
-        //$this->load_model('trunk_model');
-        //$this->load_model('list_model');
-        //$this->load_model('numberpool_model');
     }
 
     public function index($page="",$userid=0) {
-        //$users=$this->user_model->users();
         switch($page){
             case "usersave":
 
                 $user=$this->user_model->usersave($_POST);
                 $users=$this->user_model->users();
-                //printarray($user);
-                //die;
                 $view = array(
                     'view' => 'settings/index',
                     'module' => 'Отчеты',
@@ -32,8 +26,6 @@ class Settings extends Core_controller {
                 break;
             case "useredit":
                 $user=$this->user_model->userget($userid);
-                //printarray($user);
-                //die;
                 $view = array(
                     'view' => 'settings/useredit',
                     'module' => 'Отчеты',
@@ -94,8 +86,7 @@ class Settings extends Core_controller {
                 break;
             default:
                 $users=$this->user_model->users();
-                printarray($_POST);
-                //die;
+                //printarray($_POST);
                 $view = array(
                     'view' => 'settings/index',
                     'module' => 'Отчеты',
