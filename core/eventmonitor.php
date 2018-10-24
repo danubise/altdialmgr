@@ -25,6 +25,12 @@ class EventMonitor{
 
         $this->log->info( "Loading configuration" );
         $this->db->update("eventm_settings", array("propertyvalue" => 0),"`propertyname` = 'restart'");// "`propertyvalue` FROM `eventm_settings` WHERE `propertyname` = 'restart'" , false);
+        $activatelog = $this->db->select("`propertyvalue` FROM `eventm_settings` WHERE `propertyname` = 'activatelog'" , false);
+        if($activatelog==0){
+            $this->log->setConfig(array(
+                'log_level' => "disable"
+            ));
+        }
         $activeQueues = $this->db->select("`extension` FROM `eventm_current`");
         foreach ($activeQueues as $key => $queue){
             $this->activeQueues[$queue] = true;

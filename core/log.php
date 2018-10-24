@@ -33,6 +33,9 @@
         private $AddDateTime =""; // Y-m-d  перед именем файла
 
         public function __construct($config=""){
+            $this->setConfig($config);
+        }
+        public function setConfig($config){
             if(is_array($config)){
                 if(isset($config['log_file'])){
                     if(trim($config['log_file']) !="") {
