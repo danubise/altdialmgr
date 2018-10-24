@@ -5,7 +5,7 @@
  * Date: 07.10.18
  * Time: 4:05
  */
-//printarray($queueList);
+//printarray($restartStatus);
 
 ?>
 <table >
@@ -94,17 +94,23 @@
                         &nbsp
                     </td>
                     <td>
-                        <a href="<?=baseurl('service/activate')?>" class="btn btn-success">Activate</a>
+                        <a href="<?=baseurl('service/activate')?>" class="btn btn-success
+                        <?php
+                        if($restartStatus == 1) {
+                            echo " disabled";
+                        }
+                        ?>">Activate</a>
                     </td>
                     <td style="width: 20px">
                         &nbsp
                     </td>
                     <td>
-                        Restart "eventm" service <?php
-                        if($restartStatus == "0") {
-                            echo "done";
+                        Restart "eventm" service
+                        <?php
+                        if($restartStatus == 0) {
+                            echo "<b>done</b>";
                         }else{
-                            echo "in progress";
+                            echo "<b>in progress</b>";
                         }
                         ?>
                     </td>

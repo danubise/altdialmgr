@@ -24,6 +24,7 @@ class EventMonitor{
         $this->db = new db($config['mysql']);
 
         $this->log->info( "Loading configuration" );
+        $this->db->update("eventm_settings", array("propertyvalue" => 0),"`propertyname` = 'restart'");// "`propertyvalue` FROM `eventm_settings` WHERE `propertyname` = 'restart'" , false);
         $activeQueues = $this->db->select("`extension` FROM `eventm_current`");
         foreach ($activeQueues as $key => $queue){
             $this->activeQueues[$queue] = true;

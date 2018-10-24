@@ -9,7 +9,7 @@ class Service extends Core_controller {
         $queueList = $this->db->select("`extension` FROM `queues_config` ORDER BY `extension` ASC");
         $queueListActive =$this->db->select("`extension` FROM `eventm_activeq` ORDER BY `extension` ASC");
         $queueListCurrent =$this->db->select("`extension` FROM `eventm_current` ORDER BY `extension` ASC");
-        $restartStatus = $this->db->select("`propertyvalue` FROM `eventm_settings` WHERE `propertyname` = 'restart'");
+        $restartStatus = $this->db->select("`propertyvalue` FROM `eventm_settings` WHERE `propertyname` = 'restart'",false);
         if(is_array($queueListActive)) {
             foreach ($queueList as $key => $queue) {
                 foreach ($queueListActive as $key1 => $queueActive) {
