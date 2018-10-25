@@ -8,10 +8,11 @@
 //printarray($restartStatus);
 
 ?>
+<form method="post"  enctype="multipart/form-data" action="<?=baseurl('service/setparam')?>">
+
 <table >
     <tr>
         <td>
-            <form method="post"  enctype="multipart/form-data" action="<?=baseurl('service/setparam')?>">
 
             <table>
                 <tr>
@@ -53,7 +54,7 @@
                     </td>
                 </tr>
             </table>
-            </form>
+
 
         </td>
         <td style="width: 20px">
@@ -82,13 +83,35 @@
                 </tr>
             </table>
         </td>
+        <td style="width: 20px">
+            &nbsp
+        </td>
+        <td style="text-align: left; vertical-align: top;padding: 0">
+            <table>
+                <tr>
+                    <th>
+                        Other settings
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" name="activatelog" id="activatelog"  value="1" <?php
+                        if($activatelog==1){
+                            echo " checked";
+                        }
+                        ?>
+                        >&nbsp enable logging
+                    </td>
+                </tr>
+            </table>
+        </td>
     </tr>
     <tr>
         <td>
             <table>
                 <tr>
                     <td>
-                        <a href="<?=baseurl('service/submit')?>" class="btn btn-primary">Submit</a>
+                        <button name="action" value="submit" class="btn btn-primary">Submit</button>
                     </td>
                     <td style="width: 20px">
                         &nbsp
@@ -120,3 +143,4 @@
     </tr>
 </table>
 
+</form>

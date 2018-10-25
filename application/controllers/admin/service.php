@@ -10,6 +10,7 @@ class Service extends Core_controller {
         $queueListActive =$this->db->select("`extension` FROM `eventm_activeq` ORDER BY `extension` ASC");
         $queueListCurrent =$this->db->select("`extension` FROM `eventm_current` ORDER BY `extension` ASC");
         $restartStatus = $this->db->select("`propertyvalue` FROM `eventm_settings` WHERE `propertyname` = 'restart'",false);
+        $activatelog = $this->db->select("`propertyvalue` FROM `eventm_settings` WHERE `propertyname` = 'activatelog'",false);
         if(is_array($queueListActive)) {
             foreach ($queueList as $key => $queue) {
                 foreach ($queueListActive as $key1 => $queueActive) {
@@ -26,7 +27,8 @@ class Service extends Core_controller {
                     'queueList' => $queueList,
                     'queueListActive' => $queueListActive,
                     'queueListCurrent' => $queueListCurrent,
-                    'restartStatus' => $restartStatus
+                    'restartStatus' => $restartStatus,
+                    'activatelog' => $activatelog
                 )
             )
         );
@@ -37,7 +39,7 @@ class Service extends Core_controller {
         header('Location: '.baseurl());
     }
     public function setparam(){
-        //printarray($_POST);
+
         $action = $_POST['action'];
         switch ($action){
             case "add":
@@ -60,10 +62,24 @@ class Service extends Core_controller {
                     }
                 }
                 break;
+            case "submit":
+                $this->logActivate();
+                $this->submit();
+                die;
+                break;
         }
         $this->index();
     }
+    public function logActivate(){
+        if(isset($_POST['activatelog'])){
+            $this->db->update("eventm_settings", array("propertyvalue" => "1"), "`propertyname`='activatelog'");
+        }else{
+            $this->db->update("eventm_settings", array("propertyvalue" => "0"), "`propertyname`='activatelog'");
+        }
+    }
     public function submit(){
+//        printarray($_POST);
+//        die;
         $queueListActive =$this->db->select("`extension` FROM `eventm_activeq` ORDER BY `extension` ASC");
         if(is_array($queueListActive)) {
             $this->db->query ("DELETE FROM `eventm_current` WHERE 1");
